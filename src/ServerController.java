@@ -3,10 +3,7 @@ import JavaBootStrapServer.Neighbour;
 import java.io.IOException;
 import java.net.*;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Created by nifras on 1/10/17.
@@ -19,12 +16,12 @@ class ServerController {
     int serverport = 55555;
     List<Neighbour> nodes = new ArrayList<Neighbour>();
     public static void main(String[] args){
-        for( int i=0; i<40; i++) {
+        //for( int i=0; i<40; i++) {
             new ServerController().connect();
-        }
+       // }
     }
 
-    public void sendData(String file){
+    public void sendData(String file, Neighbour neighbour){
 
     }
     public void connect(){
@@ -57,23 +54,52 @@ class ServerController {
                 sock.receive(incoming);
 
                 byte[] data = incoming.getData();
-                String s = new String(data, 0, incoming.getLength());
-
+                String response = new String(data, 0, incoming.getLength());
+                isConnected = checkConnected(response);
                 //echo the details of incoming data - client ip : client port - client message
-                System.out.println(s);
+                System.out.println(response);
+                if(isConnected)
+                    break;
             } catch (UnknownHostException e) {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
-            } finally {
-
-                break;
             }
-
         }
     }
     public void disconnect(){
 
+    }
+
+    public boolean checkConnected(String response){
+        boolean isConnected = false;
+        StringTokenizer st = new StringTokenizer(response.replace("\n",""), " ");
+        //length REGOK no_nodes IP_1 port_1 IP_2 port_2
+        String length = st.nextToken();
+        String regOK = st.nextToken();
+        String no_nodes = st.nextToken();
+
+
+        if(regOK.equals(Constants.REGOK) ){
+            if(no_nodes.equals(Constants.SUCCESS ) || no_nodes.equals(Constants.FAILED_ALREADY_REGISTERED_YOURSELF) ||  no_nodes.equals(Constants.SUCESSFULL2) || no_nodes.equals(Constants.SUCESSFULL)){
+                isConnected = true;
+            }
+
+            for(int i=1; i <= st.countTokens()  ; i++){
+                Neighbour neighbour = new Neighbour(st.nextToken(), Integer.parseInt(st.nextToken()), null);
+                nodes.add(neighbour);
+                //System.out.println(neighbour.getIp() +"  "+ neighbour.getPort());
+
+            }
+            //System.out.println("Neighbours : " + nodes.size());
+
+        }
+        else {
+            isConnected = false;
+        }
+
+
+        return isConnected;
     }
     public String getIP(){
         Enumeration e = null;
