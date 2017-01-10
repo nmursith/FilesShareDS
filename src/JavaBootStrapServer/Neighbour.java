@@ -1,6 +1,6 @@
 package JavaBootStrapServer;
 
-class Neighbour{
+public class Neighbour{
 	private String ip;
 	private int port;
 	private String username;	

@@ -3,16 +3,40 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Created by nifras on 1/10/17.
  */
 public class ReadFile {
 
+
     public static  void main(String []args){
-        new ReadFile().readFileList();
+        new ReadFile().getFilePerNode();
     }
-    public void readFileList(){
+    public String[] getFilePerNode(){
+        int n = Math.abs(new Random().nextInt())%2 +3;
+        System.out.println(n);
+        String [] file = new String[n];
+        ArrayList<String > filesList = readFileList();
+//        ArrayList<String > temp = readFileList();
+//        for (int j=0; j<20; j++) {
+            for (int i = 0; i < n; i++) {
+                int rand = Math.abs(new Random().nextInt() )% (filesList.size()-1);
+                file[i] = filesList.get(rand);
+                System.out.println(file[i]);
+/*                if(!temp.contains(file[i])){
+                    temp.add(file[i]);
+                }
+                else {
+                    System.err.println("found");
+                }*/
+            }
+//        }
+//        System.out.println("Temp  Count : " + temp.size());
+        return file;
+    }
+    public ArrayList<String> readFileList(){
         ArrayList<String > files = new ArrayList<>();
         try {
             BufferedReader br = new BufferedReader(new FileReader("FileNames.txt"));
@@ -27,14 +51,14 @@ public class ReadFile {
             }
             String everything = sb.toString();
             br.close();
-            System.out.println("Count "+ files.size());
-            System.out.println(everything);
+            //System.out.println("Count "+ files.size());
+           // System.out.println(everything);
+            return files;
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-
         }
+        return null;
     }
 }
