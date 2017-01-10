@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.*;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Random;
 
@@ -18,7 +19,9 @@ class ServerController {
     int serverport = 55555;
     List<Neighbour> nodes = new ArrayList<Neighbour>();
     public static void main(String[] args){
-        new ServerController().connect();
+        for( int i=0; i<40; i++) {
+            new ServerController().connect();
+        }
     }
 
     public void sendData(String file){
@@ -27,6 +30,7 @@ class ServerController {
     public void connect(){
         while (true) {
             try {
+
                 int port = Math.abs(new Random().nextInt())% 5000 +3000;
                 sock = new DatagramSocket();
                 /*
@@ -34,13 +38,15 @@ class ServerController {
                 e.g., 0036 REG 129.82.123.45 5001 1234abcd
                  */
                 InetAddress IA = InetAddress.getLocalHost();
-                String ip = IA.getHostAddress();
+                String ip = getIP();
                 String host = IA.getHostName();
+
                 String request = "REG "+  ip +" " + port + " " + host;
                 int size = request.length() + 5;
                 DecimalFormat myFormatter = new DecimalFormat("0000");
                 String output = myFormatter.format(size);
                 request =  output +" " + request ;
+
                 System.out.println(request);
                 InetAddress server = InetAddress.getByName(serverAddrees);
 
@@ -69,4 +75,34 @@ class ServerController {
     public void disconnect(){
 
     }
+    public String getIP(){
+        Enumeration e = null;
+        try {
+            e = NetworkInterface.getNetworkInterfaces();
+        } catch (SocketException e1) {
+            e1.printStackTrace();
+        }
+        String IP = null;
+        boolean assigned = false;
+        while(e.hasMoreElements())
+        {
+            NetworkInterface n = (NetworkInterface) e.nextElement();
+            Enumeration ee = n.getInetAddresses();
+            while (ee.hasMoreElements())
+            {
+                InetAddress i = (InetAddress) ee.nextElement();
+                IP = i.getHostAddress();
+                //System.out.println(i.getHostAddress());
+                if(IP.contains(Constants.IPLIKE)) {
+                    assigned = true;
+                    break;
+                }
+            }
+            if(assigned)
+                break;
+        }
+        //System.out.println("IP: "+ IP);
+        return IP;
+    }
+
 }
