@@ -15,6 +15,7 @@ class ServerController {
     String serverAddrees = "127.0.0.1";
     int serverport = 55555;
     List<Neighbour> nodes = new ArrayList<Neighbour>();
+    FileReceiver fileReceiver;
     public static void main(String[] args){
         //for( int i=0; i<40; i++) {
             new ServerController().connect();
@@ -58,8 +59,11 @@ class ServerController {
                 isConnected = checkConnected(response);
                 //echo the details of incoming data - client ip : client port - client message
                 System.out.println(response);
-                if(isConnected)
+                if(isConnected) {
+                    fileReceiver = new FileReceiver(port);
+                    fileReceiver.start();
                     break;
+                }
             } catch (UnknownHostException e) {
                 e.printStackTrace();
             } catch (IOException e) {
