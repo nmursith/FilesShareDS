@@ -9,20 +9,24 @@ import java.util.StringTokenizer;
  */
 public class FileReceiver extends Thread {
     public int port;
+    private DatagramSocket sock;
+    private boolean isStopped;
 
     public FileReceiver(int port){
         this.port = port;
+        this.isStopped = false;
     }
 
     @Override
     public void run() {
         super.run();
+        isStopped = false;
         try {
-            DatagramSocket sock = new DatagramSocket(port);
+            sock = new DatagramSocket(port);
 
             System.out.println("Bootstrap Server created at "+ port+" . Waiting for incoming data...");
 
-            while (true) {
+            while (!isStopped) {
                 byte[] buffer = new byte[65536];
                 DatagramPacket incoming = new DatagramPacket(buffer, buffer.length);
                 sock.receive(incoming);
@@ -48,4 +52,11 @@ public class FileReceiver extends Thread {
             e.printStackTrace();
         }
     }
+    public  void stopThread(){
+        isStopped = true;
+        Thread t = this;
+        t.stop();
+        t = null;
+    }
+
 }
