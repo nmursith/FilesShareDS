@@ -3,6 +3,7 @@
  */
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.CacheHint;
 import javafx.scene.Parent;
@@ -42,8 +43,14 @@ public class FileShareDS extends Application {
         primaryStage.setTitle("FileShareDS");
         primaryStage.setScene(scene);
         primaryStage.show();
-        FileShareDSController fileShareDSController = fxmlLoader.<FileShareDSController>getController();
-        fileShareDSController.init();
 
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                FileShareDSController fileShareDSController = fxmlLoader.<FileShareDSController>getController();
+                fileShareDSController.init();
+
+            }
+        });
     }
 }

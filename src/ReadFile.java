@@ -1,3 +1,6 @@
+import similarity.CosineDistance;
+import similarity.CosineSimilarity;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -19,14 +22,20 @@ public class ReadFile {
 
     public  ArrayList<String> getFilePerNode(){
         int n = Math.abs(new Random().nextInt())%2 +3;
-        System.out.println(n);
+
         ArrayList<String> file = new ArrayList<String>();
         ArrayList<String > filesList = readFileList();
 //        ArrayList<String > temp = readFileList();
 //        for (int j=0; j<20; j++) {
             for (int i = 0; i < n; i++) {
                 int rand = Math.abs(new Random().nextInt() )% (filesList.size()-1);
-                file.add(filesList.get(rand));
+                String temp = filesList.get(rand);
+                if(!file.contains(temp)) {
+                    file.add(temp);
+                }
+                else{
+                    i = i-1;
+                }
 //                System.out.println(file.);
 /*                if(!temp.contains(file[i])){
                     temp.add(file[i]);
@@ -50,6 +59,8 @@ public class ReadFile {
                 sb.append(line);
                 sb.append(System.lineSeparator());
                 line = br.readLine();
+//                line = line.replace("\n","");
+
                 files.add(line);
             }
             String everything = sb.toString();

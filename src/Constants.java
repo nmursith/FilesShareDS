@@ -15,6 +15,7 @@ public class Constants {
     public static final  String SEROK = "SEROK";
     public static final  String UNROK = "UNROK";
     public static final  String IPLIKE = "192.168";
+    public static final  String SER = "SER";
 
 
 

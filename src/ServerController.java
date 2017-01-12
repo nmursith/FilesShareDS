@@ -16,16 +16,20 @@ class ServerController {
     InetAddress server ;
     int serverport = 55555;
     ArrayList<Neighbour> nodes = new ArrayList<Neighbour>();
-    FileReceiver fileReceiver;
+    CommandReceiver commandReceiver;
     Neighbour myself;
+    FileShareDSController fileShareDSController;
     public static void main(String[] args){
         //for( int i=0; i<40; i++) {
-        ServerController serverController = new ServerController();
+        ServerController serverController = new ServerController(null);
         serverController.connect();
       //  serverController.disconnect();
        // }
     }
 
+    public ServerController(FileShareDSController fileShareDSController){
+        this.fileShareDSController = fileShareDSController;
+    }
     public void sendData(String file, Neighbour neighbour){
 
     }
@@ -67,8 +71,8 @@ class ServerController {
                 if(isConnected) {
                     myself = new Neighbour(ip,port, host);
                     nodes.add(myself);
-                    fileReceiver = new FileReceiver(port);
-                    fileReceiver.start();
+                    commandReceiver = new CommandReceiver(fileShareDSController, port);
+                    commandReceiver.start();
 
                 }
 
@@ -135,7 +139,7 @@ class ServerController {
         }
         else if(regOK.equals(Constants.UNROK)){
             if(no_nodes.equals(Constants.SUCESSFULL)) {
-                fileReceiver.stopThread();
+                commandReceiver.stopThread();
                 isConnected = true;
             }
             else {
@@ -176,4 +180,7 @@ class ServerController {
         return IP;
     }
 
+    public Neighbour getMyself() {
+        return myself;
+    }
 }

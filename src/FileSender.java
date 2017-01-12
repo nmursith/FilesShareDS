@@ -20,10 +20,12 @@ public class FileSender extends Thread {
     private boolean isStopped;
     private Neighbour myself;
     private String command;
+    private int hops;
 
-    public FileSender(String IP, int port, Neighbour myself, String command){
+    public FileSender(String IP, int port, int hops, Neighbour myself, String command){
         this.IP = IP;
         this.port = port;
+        this.hops = hops;
         this.myself = myself;
         this.command = command;
         this.isStopped = false;
@@ -44,8 +46,8 @@ public class FileSender extends Thread {
             String ip = ServerController.getIP();
             //length SEROK no_files IP port hops filename1 filename2 ... ...
 
-            //String request = "SEROK "+  myself.getIp() +" " + myself.getPort() + " " + files;
-            String request = command;
+            String request = "SEROK "+  myself.getIp() +" " + myself.getPort() + " " +hops +" "+ command;
+            //String request = command;
             int size = request.length() + 5;
             DecimalFormat myFormatter = new DecimalFormat("0000");
             String output = myFormatter.format(size);
@@ -59,6 +61,8 @@ public class FileSender extends Thread {
             byte[] buffer = new byte[65536];
             DatagramPacket incoming = new DatagramPacket(buffer, buffer.length);
             sock.receive(incoming);
+
+            sock.close();
 
 
         } catch (SocketException e) {
