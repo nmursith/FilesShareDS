@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.security.Timestamp;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -13,18 +14,20 @@ public class ReadFile {
 
     public static  void main(String []args){
         new ReadFile().getFilePerNode();
+
     }
-    public String[] getFilePerNode(){
+
+    public  ArrayList<String> getFilePerNode(){
         int n = Math.abs(new Random().nextInt())%2 +3;
         System.out.println(n);
-        String [] file = new String[n];
+        ArrayList<String> file = new ArrayList<String>();
         ArrayList<String > filesList = readFileList();
 //        ArrayList<String > temp = readFileList();
 //        for (int j=0; j<20; j++) {
             for (int i = 0; i < n; i++) {
                 int rand = Math.abs(new Random().nextInt() )% (filesList.size()-1);
-                file[i] = filesList.get(rand);
-                System.out.println(file[i]);
+                file.add(filesList.get(rand));
+//                System.out.println(file.);
 /*                if(!temp.contains(file[i])){
                     temp.add(file[i]);
                 }

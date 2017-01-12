@@ -13,20 +13,24 @@ class ServerController {
     public  boolean isConnected = false;
     DatagramSocket sock = null;
     String serverAddrees = "127.0.0.1";
+    InetAddress server ;
     int serverport = 55555;
-    List<Neighbour> nodes = new ArrayList<Neighbour>();
+    ArrayList<Neighbour> nodes = new ArrayList<Neighbour>();
     FileReceiver fileReceiver;
+    Neighbour myself;
     public static void main(String[] args){
         //for( int i=0; i<40; i++) {
-            new ServerController().connect();
+        ServerController serverController = new ServerController();
+        serverController.connect();
+      //  serverController.disconnect();
        // }
     }
 
     public void sendData(String file, Neighbour neighbour){
 
     }
-    public void connect(){
-        while (true) {
+    public ArrayList<Neighbour> connect(){
+        while (!isConnected) {
             try {
 
                 int port = Math.abs(new Random().nextInt())% 5000 +3000;
@@ -46,7 +50,7 @@ class ServerController {
                 request =  output +" " + request ;
 
                 System.out.println(request);
-                InetAddress server = InetAddress.getByName(serverAddrees);
+                server = InetAddress.getByName(serverAddrees);
 
                 DatagramPacket dpReply = new DatagramPacket(request.getBytes() , request.getBytes().length , server , serverport);
                 sock.send(dpReply);
@@ -59,19 +63,50 @@ class ServerController {
                 isConnected = checkConnected(response);
                 //echo the details of incoming data - client ip : client port - client message
                 System.out.println(response);
+
                 if(isConnected) {
+                    myself = new Neighbour(ip,port, host);
+                    nodes.add(myself);
                     fileReceiver = new FileReceiver(port);
                     fileReceiver.start();
-                    break;
+
                 }
+
+                return nodes;
             } catch (UnknownHostException e) {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+        return null;
     }
     public void disconnect(){
+        if(isConnected){
+
+            try {
+                String request = "UNREG "+  myself.getIp() +" " + myself.getPort() +" " + myself.getUsername();
+                int size = request.length() + 5;
+                DecimalFormat myFormatter = new DecimalFormat("0000");
+                String output = myFormatter.format(size);
+                request =  output +" " + request ;
+
+                DatagramPacket dpReply = new DatagramPacket(request.getBytes() , request.getBytes().length , server , serverport);
+                sock.send(dpReply);
+                byte[] buffer = new byte[65536];
+                DatagramPacket incoming = new DatagramPacket(buffer, buffer.length);
+                sock.receive(incoming);
+
+                byte[] data = incoming.getData();
+                String response = new String(data, 0, incoming.getLength());
+                System.out.println(response);
+                isConnected = checkConnected(response);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+        }
 
     }
 
@@ -98,14 +133,20 @@ class ServerController {
             //System.out.println("Neighbours : " + nodes.size());
 
         }
-        else {
-            isConnected = false;
+        else if(regOK.equals(Constants.UNROK)){
+            if(no_nodes.equals(Constants.SUCESSFULL)) {
+                fileReceiver.stopThread();
+                isConnected = true;
+            }
+            else {
+                isConnected = false;
+            }
         }
 
 
         return isConnected;
     }
-    public String getIP(){
+    public static String getIP(){
         Enumeration e = null;
         try {
             e = NetworkInterface.getNetworkInterfaces();
