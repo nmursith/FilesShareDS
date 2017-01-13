@@ -1,8 +1,11 @@
 import JavaBootStrapServer.Neighbour;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 
 import java.io.IOException;
 import java.net.*;
@@ -15,6 +18,8 @@ import java.util.Hashtable;
  * Created by nifras on 1/12/17.
  */
 public class FileShareDSController {
+    public Button connectButton;
+    public TextField searchFile;
     ServerController serverController;
     @FXML
     ListView<String> filesIhave;// = new ListView<String>();
@@ -36,22 +41,16 @@ public class FileShareDSController {
         filesAvailable.setItems(availableItems);
 
         serverController = new ServerController(this);
-        nodes = serverController.connect();
-
         items.addAll(new ReadFile().getFilePerNode());
-
-        if(!nodes.isEmpty()) {
-            myself = nodes.get(nodes.size() -1);
-            nodes.remove(nodes.size() - 1);
-        }
 
         //search();
 
     }
     public void search(){
 
-        String file = "\"Mission Impossible\"";
-        String request = "SER "+  myself.getIp() +" " + myself.getPort() + " \"" + file + "\" "+ hops + " " +System.currentTimeMillis() ;
+        String file =   searchFile.getText() ;//"\"Mission Impossible\"";
+        file = file.replace(" ", "*");
+        String request = "SER "+  myself.getIp() +" " + myself.getPort() + " "+file +" "+ hops + " " +System.currentTimeMillis() ;
         search(request);
     }
 
@@ -66,27 +65,33 @@ public class FileShareDSController {
         System.out.println(request);
 
         for (Neighbour node: nodes) {
-           try {
-               DatagramSocket sock = new DatagramSocket();
-               InetAddress server = InetAddress.getByName(node.getIp());
 
-               DatagramPacket dpReply = new DatagramPacket(request.getBytes() , request.getBytes().length , server , node.getPort());
-               sock.send(dpReply);
-               byte[] buffer = new byte[65536];
-               DatagramPacket incoming = new DatagramPacket(buffer, buffer.length);
-               sock.receive(incoming);
+            final String finalRequest = request;
+            new Thread(() -> {
+                  try {
+                  DatagramSocket sock = new DatagramSocket();
+                  InetAddress server = InetAddress.getByName(node.getIp());
 
-               byte[] data = incoming.getData();
-               String s = new String(data, 0, incoming.getLength());
-               System.out.println(s);
-               sock.close();
-           } catch (UnknownHostException e) {
-               e.printStackTrace();
-           } catch (SocketException e) {
-               e.printStackTrace();
-           } catch (IOException e) {
-               e.printStackTrace();
-           }
+                  DatagramPacket dpReply = new DatagramPacket(finalRequest.getBytes() , finalRequest.getBytes().length , server , node.getPort());
+                  sock.send(dpReply);
+                  byte[] buffer = new byte[65536];
+                  DatagramPacket incoming = new DatagramPacket(buffer, buffer.length);
+                  sock.receive(incoming);
+
+                  byte[] data = incoming.getData();
+                  String s = new String(data, 0, incoming.getLength());
+                  System.out.println(s);
+                  sock.close();
+
+              } catch (UnknownHostException e) {
+                  e.printStackTrace();
+              } catch (SocketException e) {
+                  e.printStackTrace();
+              } catch (IOException e) {
+                  e.printStackTrace();
+              }
+              }).start();
+
 
 
         }
@@ -115,5 +120,23 @@ public class FileShareDSController {
 
     public void setMyself(Neighbour myself) {
         this.myself = myself;
+    }
+
+    public void download(ActionEvent actionEvent) {
+    }
+
+    public void delete(ActionEvent actionEvent) {
+    }
+
+    public void connect(ActionEvent actionEvent) {
+        nodes = serverController.connect();
+        connectButton.setText("Disconnect");
+
+
+
+        if(!nodes.isEmpty()) {
+            myself = nodes.get(nodes.size() -1);
+            nodes.remove(nodes.size() - 1);
+        }
     }
 }

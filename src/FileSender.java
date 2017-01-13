@@ -36,7 +36,7 @@ public class FileSender extends Thread {
         super.run();
         isStopped = false;
         try {
-            int port = Math.abs(new Random().nextInt())% 5000 +3000;
+
             sock = new DatagramSocket();
                 /*
                 REG IP_address port_no username
@@ -58,6 +58,7 @@ public class FileSender extends Thread {
 
             DatagramPacket dpReply = new DatagramPacket(request.getBytes() , request.getBytes().length , server , port);
             sock.send(dpReply);
+            System.out.println("Reply To " + IP +" " +port);
             byte[] buffer = new byte[65536];
             DatagramPacket incoming = new DatagramPacket(buffer, buffer.length);
             sock.receive(incoming);

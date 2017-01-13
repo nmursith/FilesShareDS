@@ -46,11 +46,16 @@ public class CommandReceiver extends Thread {
                 System.out.println(s);
                 String length = st.nextToken();
                 String command = st.nextToken();
+                String IP = st.nextToken();
+                String port = st.nextToken();
 
                 if(command.equals(Constants.SER)) {
-                    String IP = st.nextToken();
-                    String port = st.nextToken();
+
                     String file= st.nextToken();
+                   if(file.contains("*")){
+                       file = file.replace("*"," " );
+                   }
+
                     String hops= st.nextToken();
                     String timestamp= st.nextToken();
 
@@ -62,24 +67,32 @@ public class CommandReceiver extends Thread {
                         String files="";
                         System.out.println();
                         for (String filesIhave: fileShareDSController.items) {
+
                             try {
-                                if(new CosineDistance().apply(filesIhave, file)> 0.8)
+                                Double results = new CosineDistance().apply(filesIhave.toLowerCase(), file.toLowerCase());
+                                //System.out.println("Testing.... " + results);
+
+                                if(results > 0.4)
                                     files = filesIhave + " ";
+                                //System.out.println(files);
                             }
                             catch (Exception e){
+                                e.printStackTrace();
 
                             }
 
                         }
 
                         if(files.length()>0){
-                            new FileSender(IP, Integer.parseInt(port), hop, fileShareDSController.getMyself(), files);
+                            new FileSender(IP, Integer.parseInt(port), hop, fileShareDSController.getMyself(), files).start();
                         }
-                        String request = "SER "+  IP +" " + port + " \"" + file + "\" "+ hop + " " +timestamp ;
+                        String request = "SER "+  IP +" " + port + " " + file + " "+ hop + " " +timestamp ;
                         fileShareDSController.search(request);
 
                     }
 
+                }
+                else if(command.equals(Constants.SEROK)){
 
                 }
 
