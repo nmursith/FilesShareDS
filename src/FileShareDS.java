@@ -49,6 +49,7 @@ public class FileShareDS extends Application {
             public void run() {
                 FileShareDSController fileShareDSController = fxmlLoader.<FileShareDSController>getController();
                 fileShareDSController.init();
+                fileShareDSController.setStage(primaryStage);
 
             }
         });

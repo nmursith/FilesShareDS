@@ -21,14 +21,16 @@ public class FileSender extends Thread {
     private Neighbour myself;
     private String command;
     private int hops;
+    private int no_files;
 
-    public FileSender(String IP, int port, int hops, Neighbour myself, String command){
+    public FileSender(String IP, int port, int hops, Neighbour myself, String command,int count){
         this.IP = IP;
         this.port = port;
         this.hops = hops;
         this.myself = myself;
         this.command = command;
         this.isStopped = false;
+        this.no_files = count;
     }
 
     @Override
@@ -46,7 +48,7 @@ public class FileSender extends Thread {
             String ip = ServerController.getIP();
             //length SEROK no_files IP port hops filename1 filename2 ... ...
 
-            String request = "SEROK "+  myself.getIp() +" " + myself.getPort() + " " +hops +" "+ command;
+            String request = "SEROK "+no_files+" " +  myself.getIp() +" " + myself.getPort() + " " +hops +" "+ command;
             //String request = command;
             int size = request.length() + 5;
             DecimalFormat myFormatter = new DecimalFormat("0000");
@@ -64,7 +66,7 @@ public class FileSender extends Thread {
             sock.receive(incoming);
 
             sock.close();
-
+            stopThread();
 
         } catch (SocketException e) {
             e.printStackTrace();

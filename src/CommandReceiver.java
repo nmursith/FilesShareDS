@@ -1,3 +1,4 @@
+import javafx.application.Platform;
 import similarity.CosineDistance;
 
 import java.io.IOException;
@@ -46,11 +47,11 @@ public class CommandReceiver extends Thread {
                 System.out.println(s);
                 String length = st.nextToken();
                 String command = st.nextToken();
-                String IP = st.nextToken();
-                String port = st.nextToken();
+
 
                 if(command.equals(Constants.SER)) {
-
+                    String IP = st.nextToken();
+                    String port = st.nextToken();
                     String file= st.nextToken();
                    if(file.contains("*")){
                        file = file.replace("*"," " );
@@ -62,18 +63,23 @@ public class CommandReceiver extends Thread {
                     String com = file+timestamp;
                     if(!fileSearched.contains(com)){
                         //check whther I have
+                        fileSearched.add(com);
+                        System.out.println(com);
                         int hop = Integer.parseInt(hops);
                         hop = hop - 1;
                         String files="";
-                        System.out.println();
+
+                        int count = 0;
                         for (String filesIhave: fileShareDSController.items) {
 
                             try {
                                 Double results = new CosineDistance().apply(filesIhave.toLowerCase(), file.toLowerCase());
                                 //System.out.println("Testing.... " + results);
 
-                                if(results > 0.4)
-                                    files = filesIhave + " ";
+                                if(results > 0.4) {
+                                    files = filesIhave.replace(" ", "*") + ",";
+                                    count++;
+                                }
                                 //System.out.println(files);
                             }
                             catch (Exception e){
@@ -84,7 +90,8 @@ public class CommandReceiver extends Thread {
                         }
 
                         if(files.length()>0){
-                            new FileSender(IP, Integer.parseInt(port), hop, fileShareDSController.getMyself(), files).start();
+
+                            new FileSender(IP, Integer.parseInt(port), hop, fileShareDSController.getMyself(), files, count).start();
                         }
                         String request = "SER "+  IP +" " + port + " " + file + " "+ hop + " " +timestamp ;
                         fileShareDSController.search(request);
@@ -93,10 +100,22 @@ public class CommandReceiver extends Thread {
 
                 }
                 else if(command.equals(Constants.SEROK)){
+                    //length SEROK no_files IP port hops filename1 filename2 ... ...
+                    String no_files = st.nextToken();
+                    String IP = st.nextToken();
+                    String port = st.nextToken();
+                    String hops= st.nextToken();
+                    StringTokenizer files = new StringTokenizer(st.nextToken(), ",");
 
+                    while(files.hasMoreTokens()){
+                        String fileName = files.nextToken();
+                        if(fileName.contains("*")){
+                            fileName = fileName.replace("*"," " );
+                        }
+                        final String finalFileName = fileName;
+                        Platform.runLater(() -> fileShareDSController.availableItems.add(finalFileName));
+                    }
                 }
-
-
 
             }
 

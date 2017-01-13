@@ -34,8 +34,8 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Button mnemonicParsing="false" onAction="#search" text="Search" GridPane.columnIndex="1" />
-            <Button fx:id="connectButton" mnemonicParsing="false" onAction="#connect" text="Connect" GridPane.columnIndex="2" />
+            <Button fx:id="searchButton" disable="true" maxWidth="-Infinity" mnemonicParsing="false" onAction="#search" prefWidth="75.0" text="Search" GridPane.columnIndex="1" />
+            <Button fx:id="connectButton" maxWidth="-Infinity" mnemonicParsing="false" onAction="#connect" prefWidth="75.0" text="Connect" GridPane.columnIndex="2" />
             <TextField fx:id="searchFile">
                <GridPane.margin>
                   <Insets left="5.0" right="5.0" />

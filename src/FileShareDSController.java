@@ -1,4 +1,5 @@
 import JavaBootStrapServer.Neighbour;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -6,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.*;
@@ -20,18 +22,21 @@ import java.util.Hashtable;
 public class FileShareDSController {
     public Button connectButton;
     public TextField searchFile;
+    public Button searchButton;
     ServerController serverController;
+    Stage stage;
     @FXML
     ListView<String> filesIhave;// = new ListView<String>();
     ObservableList<String> items = FXCollections.observableArrayList ();
 
     @FXML
     ListView<String> filesAvailable;// = new ListView<String>();
-    ObservableList<String> availableItems = FXCollections.observableArrayList ("ass","sfsd","sfsd");
+    ObservableList<String> availableItems = FXCollections.observableArrayList ();
 
 
     ArrayList<Neighbour> nodes;
     Neighbour myself;
+    ArrayList<String> files;
     int hops = 20;
 
 
@@ -39,9 +44,9 @@ public class FileShareDSController {
         System.out.println(System.currentTimeMillis());
         filesIhave.setItems(items);
         filesAvailable.setItems(availableItems);
-
+        files = new ReadFile().getFilePerNode();
         serverController = new ServerController(this);
-        items.addAll(new ReadFile().getFilePerNode());
+        items.addAll(files);
 
         //search();
 
@@ -123,6 +128,17 @@ public class FileShareDSController {
     }
 
     public void download(ActionEvent actionEvent) {
+
+        try {
+            String file =filesAvailable.getSelectionModel().getSelectedItem();
+            items.add(file);
+            files.add(file);
+        }
+        catch (Exception e){
+
+        }
+        availableItems.clear();
+
     }
 
     public void delete(ActionEvent actionEvent) {
@@ -131,6 +147,8 @@ public class FileShareDSController {
     public void connect(ActionEvent actionEvent) {
         nodes = serverController.connect();
         connectButton.setText("Disconnect");
+        searchButton.setDisable(false);
+        this.setTitle();
 
 
 
@@ -138,5 +156,18 @@ public class FileShareDSController {
             myself = nodes.get(nodes.size() -1);
             nodes.remove(nodes.size() - 1);
         }
+    }
+
+    public void setTitle(){
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                stage.setTitle("FileShareDS@"+ myself.getIp()+":"+myself.getPort() );
+            }
+        });
+
+    }
+    public void setStage(Stage stage) {
+        this.stage = stage;
     }
 }
