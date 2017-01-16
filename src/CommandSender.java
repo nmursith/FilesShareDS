@@ -13,7 +13,7 @@ import java.util.StringTokenizer;
  * Created by nifras on 1/12/17.
  */
 
-public class FileSender extends Thread {
+public class CommandSender extends Thread {
     public int port;
     public String IP;
     private DatagramSocket sock;
@@ -23,14 +23,15 @@ public class FileSender extends Thread {
     private int hops;
     private int no_files;
 
-    public FileSender(String IP, int port, int hops, Neighbour myself, String command,int count){
+    //public CommandSender(String IP, int port, int hops, Neighbour myself, String command, int count){
+        public CommandSender(String IP, int port,  String command){
         this.IP = IP;
         this.port = port;
-        this.hops = hops;
-        this.myself = myself;
+//        this.hops = hops;
+//        this.myself = myself;
         this.command = command;
         this.isStopped = false;
-        this.no_files = count;
+//        this.no_files = count;
     }
 
     @Override
@@ -48,8 +49,8 @@ public class FileSender extends Thread {
             String ip = ServerController.getIP();
             //length SEROK no_files IP port hops filename1 filename2 ... ...
 
-            String request = "SEROK "+no_files+" " +  myself.getIp() +" " + myself.getPort() + " " +hops +" "+ command;
-            //String request = command;
+            //String request = "SEROK "+no_files+" " +  myself.getIp() +" " + myself.getPort() + " " +hops +" "+ command;
+            String request = command;
             int size = request.length() + 5;
             DecimalFormat myFormatter = new DecimalFormat("0000");
             String output = myFormatter.format(size);

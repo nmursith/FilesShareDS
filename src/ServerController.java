@@ -27,6 +27,7 @@ class ServerController {
        // }
     }
 
+
     public ServerController(FileShareDSController fileShareDSController){
         this.fileShareDSController = fileShareDSController;
     }
@@ -105,6 +106,7 @@ class ServerController {
                 String response = new String(data, 0, incoming.getLength());
                 System.out.println(response);
                 isConnected = checkConnected(response);
+                commandReceiver.stopThread();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -178,6 +180,14 @@ class ServerController {
         }
         //System.out.println("IP: "+ IP);
         return IP;
+    }
+
+    public boolean isConnected() {
+        return isConnected;
+    }
+
+    public void setConnected(boolean connected) {
+        isConnected = connected;
     }
 
     public Neighbour getMyself() {

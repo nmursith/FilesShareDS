@@ -91,7 +91,9 @@ public class CommandReceiver extends Thread {
 
                         if(files.length()>0){
 
-                            new FileSender(IP, Integer.parseInt(port), hop, fileShareDSController.getMyself(), files, count).start();
+                            //new CommandSender(IP, Integer.parseInt(port), hop, fileShareDSController.getMyself(), files, count).start();
+                            String request = "SEROK "+count+" " +  fileShareDSController.getMyself().getIp() +" " + fileShareDSController.getMyself().getPort() + " " +hop +" "+ files;
+                            new CommandSender(IP, Integer.parseInt(port), request).start();
                         }
                         String request = "SER "+  IP +" " + port + " " + file + " "+ hop + " " +timestamp ;
                         fileShareDSController.search(request);

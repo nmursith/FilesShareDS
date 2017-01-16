@@ -39,6 +39,7 @@ public class FileShareDSController {
     ArrayList<String> files;
     int hops = 20;
 
+    private boolean isConnected = false;
 
     public void init() {
         System.out.println(System.currentTimeMillis());
@@ -145,8 +146,26 @@ public class FileShareDSController {
     }
 
     public void connect(ActionEvent actionEvent) {
-        nodes = serverController.connect();
-        connectButton.setText("Disconnect");
+
+        if(!isConnected){
+
+            nodes = serverController.connect();
+            if(serverController.isConnected()){
+                connectButton.setText("Disconnect");
+                isConnected = true;
+            }
+
+        }
+        else {
+            serverController.disconnect();
+            if(!serverController.isConnected()){
+                connectButton.setText("Connect");
+                isConnected = false;
+            }
+
+        }
+
+
         searchButton.setDisable(false);
         this.setTitle();
 

@@ -17,7 +17,6 @@ public class ReadFile {
 
     public static  void main(String []args){
         new ReadFile().getFilePerNode();
-
     }
 
     public  ArrayList<String> getFilePerNode(){
