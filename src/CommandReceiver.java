@@ -132,7 +132,7 @@ public class CommandReceiver extends Thread {
                     String port = st.nextToken();
                     String hops= st.nextToken();
                     StringTokenizer files = new StringTokenizer(st.nextToken(), ",");
-
+//jh
                     while(files.hasMoreTokens()){
                         String fileName = files.nextToken();
                         if(fileName.contains("*")){
