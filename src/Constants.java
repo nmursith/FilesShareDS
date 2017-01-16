@@ -18,5 +18,8 @@ public class Constants {
     public static final  String SER = "SER";
 
 
+    public static String ERROR = "ERROR";
+    public static String JOIN = "JOIN";
+    public static String LEAVE = "LEAVE";
 
 }

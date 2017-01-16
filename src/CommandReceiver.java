@@ -1,3 +1,5 @@
+import JavaBootStrapServer.Neighbour;
+import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 import javafx.application.Platform;
 import similarity.CosineDistance;
 
@@ -101,6 +103,28 @@ public class CommandReceiver extends Thread {
                     }
 
                 }
+                else if(command.equals(Constants.JOIN)){
+                    String IP = st.nextToken();
+                    String port = st.nextToken();
+
+
+                    String request = checkJoin(IP, Integer.parseInt(port));
+
+                    new CommandSender(IP, Integer.parseInt(port), request).start();
+
+                }
+                else if(command.equals(Constants.LEAVE)){
+                    String IP = st.nextToken();
+                    String port = st.nextToken();
+
+
+                    String request = leaveCheck(IP, Integer.parseInt(port));
+
+
+                    new CommandSender(IP, Integer.parseInt(port), request).start();
+
+                }
+
                 else if(command.equals(Constants.SEROK)){
                     //length SEROK no_files IP port hops filename1 filename2 ... ...
                     String no_files = st.nextToken();
@@ -118,7 +142,33 @@ public class CommandReceiver extends Thread {
                         Platform.runLater(() -> fileShareDSController.availableItems.add(finalFileName));
                     }
                 }
+                else if(command.equals(Constants.JOINOK)){
+                    //length JOINOK value
+                    String value = st.nextToken();
+                    if(value.equals(Constants.SUCCESS)){
+                        System.out.println("Successfully Joined");
 
+                    }
+                    else {
+                        System.out.println("Error in Joinng");
+                    }
+
+                }
+                else if(command.equals(Constants.LEAVEOK)){
+                    String value = st.nextToken();
+                    if(value.equals(Constants.SUCCESS)){
+                        System.out.println("Successfully Left");
+
+                    }
+                    else {
+                        System.out.println("Error in Leaving");
+                    }
+
+                }
+                else if(command.equals(Constants.ERROR)){
+                    System.err.println("ERROR");
+
+                }
             }
 
 
@@ -127,6 +177,41 @@ public class CommandReceiver extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public String leaveCheck(String IP, int port){
+        String reply = "";
+        for (int i=0; i<fileShareDSController.nodes.size(); i++) {
+            if (fileShareDSController.nodes.get(i).getPort() == port) {
+                if (fileShareDSController.nodes.get(i).getIp().equals(IP)) {
+                    reply = "LEAVEOK 0";
+                    fileShareDSController.nodes.remove(i);
+                    return reply;
+                }
+
+
+
+            }
+        }
+        reply = "LEAVEOK 9999";
+        return reply;
+    }
+
+    public String checkJoin(String IP, int port){
+        String reply = "";
+        for (int i=0; i<fileShareDSController.nodes.size(); i++) {
+            if (fileShareDSController.nodes.get(i).getPort() == port) {
+                if (fileShareDSController.nodes.get(i).getIp().equals(IP)) {
+                    reply = "JOINOK 9999";
+                    return reply;
+                }
+
+            }
+        }
+        Neighbour node = new Neighbour(IP, port, "null");
+        fileShareDSController.nodes.add(node);
+        reply = "JOINOK 0";
+        return reply;
     }
     public  void stopThread(){
         isStopped = true;

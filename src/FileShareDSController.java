@@ -153,6 +153,8 @@ public class FileShareDSController {
             if(serverController.isConnected()){
                 connectButton.setText("Disconnect");
                 isConnected = true;
+                //length JOIN IP_address port_no
+                JoinLeave("JOIN");
             }
 
         }
@@ -161,6 +163,9 @@ public class FileShareDSController {
             if(!serverController.isConnected()){
                 connectButton.setText("Connect");
                 isConnected = false;
+                JoinLeave("LEAVE");
+                //ength LEAVE IP_address port_no
+
             }
 
         }
@@ -177,6 +182,17 @@ public class FileShareDSController {
         }
     }
 
+    public void JoinLeave(String command){
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                for(int i=0; i<nodes.size(); i++){
+                    String request = command +" " + myself.getIp() + " "+ myself.getPort();
+                    new CommandSender(nodes.get(i).getIp(), nodes.get(i).getPort(), request).start();
+                }
+            }
+        });
+    }
     public void setTitle(){
         Platform.runLater(new Runnable() {
             @Override
