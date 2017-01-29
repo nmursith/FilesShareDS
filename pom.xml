@@ -26,8 +26,7 @@
                             <goal>wsgen</goal>
                         </goals>
                         <configuration>
-                            <sei>com.fileshare
-                            </sei>
+                            <sei>com.fileshare</sei>
                             <genWsdl>true</genWsdl>
                             <keep>true</keep>
                         </configuration>
@@ -36,5 +35,5 @@
             </plugin>
         </plugins>
     </build>
-    
+
 </project>
