@@ -7,23 +7,26 @@ import java.net.*;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.Random;
 import java.util.StringTokenizer;
 
 /**
  * Created by nifras on 1/10/17.
  */
-class ServerController {
+public class ServerController {
     
     public boolean isConnected = false;
     DatagramSocket sock = null;
-    String serverAddrees = "192.168.8.101";
+    String serverAddrees = Constants.BOOTSTRAP_SERVER_IP;
     InetAddress server;
     int serverport = 55555;
     ArrayList<Neighbour> nodes = new ArrayList<Neighbour>();
     CommandReceiver commandReceiver;
     Neighbour myself;
     FileShareDSController fileShareDSController;
+    
+    public ServerController(FileShareDSController fileShareDSController) {
+        this.fileShareDSController = fileShareDSController;
+    }
     
     public static void main(String[] args) {
         //for( int i=0; i<40; i++) {
@@ -33,9 +36,32 @@ class ServerController {
         // }
     }
     
-    
-    public ServerController(FileShareDSController fileShareDSController) {
-        this.fileShareDSController = fileShareDSController;
+    public static String getIP() {
+        Enumeration e = null;
+        try {
+            e = NetworkInterface.getNetworkInterfaces();
+        } catch (SocketException e1) {
+            e1.printStackTrace();
+        }
+        String IP = null;
+        boolean assigned = false;
+        while (e.hasMoreElements()) {
+            NetworkInterface n = (NetworkInterface) e.nextElement();
+            Enumeration ee = n.getInetAddresses();
+            while (ee.hasMoreElements()) {
+                InetAddress i = (InetAddress) ee.nextElement();
+                IP = i.getHostAddress();
+                //System.out.println(i.getHostAddress());
+                if (IP.contains(Constants.IPLIKE)) {
+                    assigned = true;
+                    break;
+                }
+            }
+            if (assigned)
+                break;
+        }
+        //System.out.println("IP: "+ IP);
+        return IP;
     }
     
     public void sendData(String file, Neighbour neighbour) {
@@ -46,7 +72,7 @@ class ServerController {
         while (!isConnected) {
             try {
                 
-                int port = Math.abs(new Random().nextInt()) % 5000 + 3000;
+                int port = 9090;
                 sock = new DatagramSocket();
                 /*
                 REG IP_address port_no username
@@ -158,34 +184,6 @@ class ServerController {
         
         
         return isConnected;
-    }
-    
-    public static String getIP() {
-        Enumeration e = null;
-        try {
-            e = NetworkInterface.getNetworkInterfaces();
-        } catch (SocketException e1) {
-            e1.printStackTrace();
-        }
-        String IP = null;
-        boolean assigned = false;
-        while (e.hasMoreElements()) {
-            NetworkInterface n = (NetworkInterface) e.nextElement();
-            Enumeration ee = n.getInetAddresses();
-            while (ee.hasMoreElements()) {
-                InetAddress i = (InetAddress) ee.nextElement();
-                IP = i.getHostAddress();
-                //System.out.println(i.getHostAddress());
-                if (IP.contains(Constants.IPLIKE)) {
-                    assigned = true;
-                    break;
-                }
-            }
-            if (assigned)
-                break;
-        }
-        //System.out.println("IP: "+ IP);
-        return IP;
     }
     
     public boolean isConnected() {

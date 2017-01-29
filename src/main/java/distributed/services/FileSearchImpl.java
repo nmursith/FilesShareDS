@@ -1,5 +1,6 @@
 package distributed.services;
 
+import main.ServerController;
 import similarity.CosineDistance;
 import util.MyFilleList;
 
@@ -14,7 +15,7 @@ public class FileSearchImpl implements FileSearch {
     
     public static void runService() {
         FileSearchImpl wsInstance = new FileSearchImpl();
-        Endpoint.publish("http://localhost:8282/ws/search", wsInstance);
+        Endpoint.publish("http://" + ServerController.getIP() + ":8282/ws/search", wsInstance);
     }
     
     @Override
@@ -22,9 +23,10 @@ public class FileSearchImpl implements FileSearch {
         return name + " hello";
     }
     
-    
     @Override
     public String search(String s) {
+        System.out.println("searching for: " + s);
+        
         ArrayList<String> files = MyFilleList.getInstance().getFiles();
         int count = 0;
         String file = "";
@@ -43,7 +45,6 @@ public class FileSearchImpl implements FileSearch {
                 e.printStackTrace();
                 
             }
-            
         }
         return file;
     }

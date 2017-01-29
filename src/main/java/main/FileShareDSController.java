@@ -62,10 +62,15 @@ public class FileShareDSController {
         
         String file = searchFile.getText();//"\"Mission Impossible\"";
         file = file.replace(" ", "*");
-        for (Neighbour node : nodes) {
+        
+        ArrayList<String> neighbours = new ArrayList<>();
+        neighbours.add(ServerController.getIP());
+        neighbours.add("192.168.8.101");
+        
+        for (String node : neighbours) {
             URL url = null;
             try {
-                url = new URL("http://" + node.getIp() + ":8282/ws/search");
+                url = new URL("http://" + node + ":8282/ws/search");
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
@@ -79,7 +84,6 @@ public class FileShareDSController {
             FileSearch hello = service.getPort(FileSearch.class);
             
             // System.out.println(hello.search("Microsoft"));
-//jh
             StringTokenizer files = new StringTokenizer(hello.search(file), ",");
             while (files.hasMoreTokens()) {
                 String fileName = files.nextToken();
@@ -90,8 +94,34 @@ public class FileShareDSController {
                 Platform.runLater(() -> availableItems.add(finalFileName));
             }
         }
-        // String request = "SER "+  myself.getIp() +" " + myself.getPort() + " "+file +" "+ hops + " " +System.currentTimeMillis() ;
-        // search(request);
+
+//        URL url = null;
+//        try {
+//            url = new URL("http://localhost:8282/ws/search");
+//        } catch (MalformedURLException e) {
+//            e.printStackTrace();
+//        }
+//
+//        //1st argument service URI, refer to wsdl document above
+//        //2nd argument is service name, refer to wsdl document above
+//        QName qname = new QName("http://services.distributed/", "FileSearchImplService");
+//
+//        Service service = Service.create(url, qname);
+//
+//        FileSearch hello = service.getPort(FileSearch.class);
+//
+//        // System.out.println(hello.search("Microsoft"));
+//        StringTokenizer files = new StringTokenizer(hello.search(file), ",");
+//        while (files.hasMoreTokens()) {
+//            String fileName = files.nextToken();
+//            if (fileName.contains("*")) {
+//                fileName = fileName.replace("*", " ");
+//            }
+//            final String finalFileName = fileName;
+//            Platform.runLater(() -> availableItems.add(finalFileName));
+//        }
+//        String request = "SER " + myself.getIp() + " " + myself.getPort() + " " + file + " " + hops + " " + System.currentTimeMillis();
+//        search(request);
     }
     
     public void search(String request) {
