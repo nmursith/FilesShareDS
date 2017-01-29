@@ -7,6 +7,7 @@ import java.net.*;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.Random;
 import java.util.StringTokenizer;
 
 /**
@@ -72,7 +73,7 @@ public class ServerController {
         while (!isConnected) {
             try {
                 
-                int port = 9090;
+                int port = Math.abs(new Random().nextInt()) % 5000 + 3000;
                 sock = new DatagramSocket();
                 /*
                 REG IP_address port_no username

@@ -67,10 +67,10 @@ public class FileShareDSController {
         neighbours.add(ServerController.getIP());
         neighbours.add("192.168.8.101");
         
-        for (String node : neighbours) {
+        for (Neighbour node : nodes) {
             URL url = null;
             try {
-                url = new URL("http://" + node + ":8282/ws/search");
+                url = new URL("http://" + node.getIp() + ":8282/ws/search");
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
@@ -94,34 +94,7 @@ public class FileShareDSController {
                 Platform.runLater(() -> availableItems.add(finalFileName));
             }
         }
-
-//        URL url = null;
-//        try {
-//            url = new URL("http://localhost:8282/ws/search");
-//        } catch (MalformedURLException e) {
-//            e.printStackTrace();
-//        }
-//
-//        //1st argument service URI, refer to wsdl document above
-//        //2nd argument is service name, refer to wsdl document above
-//        QName qname = new QName("http://services.distributed/", "FileSearchImplService");
-//
-//        Service service = Service.create(url, qname);
-//
-//        FileSearch hello = service.getPort(FileSearch.class);
-//
-//        // System.out.println(hello.search("Microsoft"));
-//        StringTokenizer files = new StringTokenizer(hello.search(file), ",");
-//        while (files.hasMoreTokens()) {
-//            String fileName = files.nextToken();
-//            if (fileName.contains("*")) {
-//                fileName = fileName.replace("*", " ");
-//            }
-//            final String finalFileName = fileName;
-//            Platform.runLater(() -> availableItems.add(finalFileName));
-//        }
-//        String request = "SER " + myself.getIp() + " " + myself.getPort() + " " + file + " " + hops + " " + System.currentTimeMillis();
-//        search(request);
+        
     }
     
     public void search(String request) {
