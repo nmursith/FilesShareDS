@@ -1,6 +1,7 @@
 package main;
 
 import JavaBootStrapServer.Neighbour;
+import distributed.services.FileSearch;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -12,10 +13,13 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import util.MyFilleList;
 
+import javax.xml.namespace.QName;
+import javax.xml.ws.Service;
 import java.io.IOException;
 import java.net.*;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.StringTokenizer;
 
 /**
  * Created by nifras on 1/12/17.
@@ -58,8 +62,36 @@ public class FileShareDSController {
         
         String file = searchFile.getText();//"\"Mission Impossible\"";
         file = file.replace(" ", "*");
-        String request = "SER " + myself.getIp() + " " + myself.getPort() + " " + file + " " + hops + " " + System.currentTimeMillis();
-        search(request);
+        for (Neighbour node : nodes) {
+            URL url = null;
+            try {
+                url = new URL("http://" + node.getIp() + ":8282/ws/search");
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+            
+            //1st argument service URI, refer to wsdl document above
+            //2nd argument is service name, refer to wsdl document above
+            QName qname = new QName("http://services.distributed/", "FileSearchImplService");
+            
+            Service service = Service.create(url, qname);
+            
+            FileSearch hello = service.getPort(FileSearch.class);
+            
+            // System.out.println(hello.search("Microsoft"));
+//jh
+            StringTokenizer files = new StringTokenizer(hello.search(file), ",");
+            while (files.hasMoreTokens()) {
+                String fileName = files.nextToken();
+                if (fileName.contains("*")) {
+                    fileName = fileName.replace("*", " ");
+                }
+                final String finalFileName = fileName;
+                Platform.runLater(() -> availableItems.add(finalFileName));
+            }
+        }
+        // String request = "SER "+  myself.getIp() +" " + myself.getPort() + " "+file +" "+ hops + " " +System.currentTimeMillis() ;
+        // search(request);
     }
     
     public void search(String request) {
