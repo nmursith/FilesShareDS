@@ -1,5 +1,6 @@
+package main;
+
 import JavaBootStrapServer.Neighbour;
-import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 import javafx.application.Platform;
 import similarity.CosineDistance;
 
@@ -15,12 +16,12 @@ import java.util.StringTokenizer;
  */
 public class CommandReceiver extends Thread {
     public int port;
-    private DatagramSocket sock;
-    private boolean isStopped;
     ArrayList<String> fileSearched = new ArrayList<>();
     FileShareDSController fileShareDSController;
+    private DatagramSocket sock;
+    private boolean isStopped;
 
-    public CommandReceiver(FileShareDSController fileShareDSController, int port){
+    public CommandReceiver(FileShareDSController fileShareDSController, int port) {
         this.port = port;
         this.isStopped = false;
         this.fileShareDSController = fileShareDSController;
@@ -32,7 +33,7 @@ public class CommandReceiver extends Thread {
         isStopped = false;
         try {
             sock = new DatagramSocket(port);
-            System.out.println("Command Receiver  created at "+ port+" . Waiting for incoming commands...");
+            System.out.println("Command Receiver  created at " + port + " . Waiting for incoming commands...");
 
             while (!isStopped) {
                 byte[] buffer = new byte[65536];
@@ -51,59 +52,57 @@ public class CommandReceiver extends Thread {
                 String command = st.nextToken();
 
 
-                if(command.equals(Constants.SER)) {
+                if (command.equals(Constants.SER)) {
                     String IP = st.nextToken();
                     String port = st.nextToken();
-                    String file= st.nextToken();
-                   if(file.contains("*")){
-                       file = file.replace("*"," " );
-                   }
+                    String file = st.nextToken();
+                    if (file.contains("*")) {
+                        file = file.replace("*", " ");
+                    }
 
-                    String hops= st.nextToken();
-                    String timestamp= st.nextToken();
+                    String hops = st.nextToken();
+                    String timestamp = st.nextToken();
 
-                    String com = file+timestamp;
-                    if(!fileSearched.contains(com)){
+                    String com = file + timestamp;
+                    if (!fileSearched.contains(com)) {
                         //check whther I have
                         fileSearched.add(com);
                         System.out.println(com);
                         int hop = Integer.parseInt(hops);
                         hop = hop - 1;
-                        String files="";
+                        String files = "";
 
                         int count = 0;
-                        for (String filesIhave: fileShareDSController.items) {
+                        for (String filesIhave : fileShareDSController.items) {
 
                             try {
                                 Double results = new CosineDistance().apply(filesIhave.toLowerCase(), file.toLowerCase());
                                 //System.out.println("Testing.... " + results);
 
-                                if(results > 0.4) {
+                                if (results > 0.4) {
                                     files = filesIhave.replace(" ", "*") + ",";
                                     count++;
                                 }
                                 //System.out.println(files);
-                            }
-                            catch (Exception e){
+                            } catch (Exception e) {
                                 e.printStackTrace();
 
                             }
 
                         }
 
-                        if(files.length()>0){
+                        if (files.length() > 0) {
 
                             //new CommandSender(IP, Integer.parseInt(port), hop, fileShareDSController.getMyself(), files, count).start();
-                            String request = "SEROK "+count+" " +  fileShareDSController.getMyself().getIp() +" " + fileShareDSController.getMyself().getPort() + " " +hop +" "+ files;
+                            String request = "SEROK " + count + " " + fileShareDSController.getMyself().getIp() + " " + fileShareDSController.getMyself().getPort() + " " + hop + " " + files;
                             new CommandSender(IP, Integer.parseInt(port), request).start();
                         }
-                        String request = "SER "+  IP +" " + port + " " + file + " "+ hop + " " +timestamp ;
+                        String request = "SER " + IP + " " + port + " " + file + " " + hop + " " + timestamp;
                         fileShareDSController.search(request);
 
                     }
 
-                }
-                else if(command.equals(Constants.JOIN)){
+                } else if (command.equals(Constants.JOIN)) {
                     String IP = st.nextToken();
                     String port = st.nextToken();
 
@@ -112,8 +111,7 @@ public class CommandReceiver extends Thread {
 
                     new CommandSender(IP, Integer.parseInt(port), request).start();
 
-                }
-                else if(command.equals(Constants.LEAVE)){
+                } else if (command.equals(Constants.LEAVE)) {
                     String IP = st.nextToken();
                     String port = st.nextToken();
 
@@ -123,49 +121,42 @@ public class CommandReceiver extends Thread {
 
                     new CommandSender(IP, Integer.parseInt(port), request).start();
 
-                }
-
-                else if(command.equals(Constants.SEROK)){
+                } else if (command.equals(Constants.SEROK)) {
                     //length SEROK no_files IP port hops filename1 filename2 ... ...
                     String no_files = st.nextToken();
                     String IP = st.nextToken();
                     String port = st.nextToken();
-                    String hops= st.nextToken();
+                    String hops = st.nextToken();
                     StringTokenizer files = new StringTokenizer(st.nextToken(), ",");
 //jh
-                    while(files.hasMoreTokens()){
+                    while (files.hasMoreTokens()) {
                         String fileName = files.nextToken();
-                        if(fileName.contains("*")){
-                            fileName = fileName.replace("*"," " );
+                        if (fileName.contains("*")) {
+                            fileName = fileName.replace("*", " ");
                         }
                         final String finalFileName = fileName;
                         Platform.runLater(() -> fileShareDSController.availableItems.add(finalFileName));
                     }
-                }
-                else if(command.equals(Constants.JOINOK)){
+                } else if (command.equals(Constants.JOINOK)) {
                     //length JOINOK value
                     String value = st.nextToken();
-                    if(value.equals(Constants.SUCCESS)){
+                    if (value.equals(Constants.SUCCESS)) {
                         System.out.println("Successfully Joined");
 
-                    }
-                    else {
+                    } else {
                         System.out.println("Error in Joinng");
                     }
 
-                }
-                else if(command.equals(Constants.LEAVEOK)){
+                } else if (command.equals(Constants.LEAVEOK)) {
                     String value = st.nextToken();
-                    if(value.equals(Constants.SUCCESS)){
+                    if (value.equals(Constants.SUCCESS)) {
                         System.out.println("Successfully Left");
 
-                    }
-                    else {
+                    } else {
                         System.out.println("Error in Leaving");
                     }
 
-                }
-                else if(command.equals(Constants.ERROR)){
+                } else if (command.equals(Constants.ERROR)) {
                     System.err.println("ERROR");
 
                 }
@@ -179,9 +170,9 @@ public class CommandReceiver extends Thread {
         }
     }
 
-    public String leaveCheck(String IP, int port){
+    public String leaveCheck(String IP, int port) {
         String reply = "";
-        for (int i=0; i<fileShareDSController.nodes.size(); i++) {
+        for (int i = 0; i < fileShareDSController.nodes.size(); i++) {
             if (fileShareDSController.nodes.get(i).getPort() == port) {
                 if (fileShareDSController.nodes.get(i).getIp().equals(IP)) {
                     reply = "LEAVEOK 0";
@@ -190,16 +181,15 @@ public class CommandReceiver extends Thread {
                 }
 
 
-
             }
         }
         reply = "LEAVEOK 9999";
         return reply;
     }
 
-    public String checkJoin(String IP, int port){
+    public String checkJoin(String IP, int port) {
         String reply = "";
-        for (int i=0; i<fileShareDSController.nodes.size(); i++) {
+        for (int i = 0; i < fileShareDSController.nodes.size(); i++) {
             if (fileShareDSController.nodes.get(i).getPort() == port) {
                 if (fileShareDSController.nodes.get(i).getIp().equals(IP)) {
                     reply = "JOINOK 9999";
@@ -213,7 +203,8 @@ public class CommandReceiver extends Thread {
         reply = "JOINOK 0";
         return reply;
     }
-    public  void stopThread(){
+
+    public void stopThread() {
         isStopped = true;
         Thread t = this;
         t.stop();

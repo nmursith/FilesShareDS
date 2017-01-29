@@ -1,3 +1,5 @@
+package main;
+
 import JavaBootStrapServer.Neighbour;
 
 import java.io.IOException;
