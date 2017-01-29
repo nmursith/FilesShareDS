@@ -21,6 +21,7 @@ import java.util.ArrayList;
  * Created by nifras on 1/12/17.
  */
 public class FileShareDSController {
+    static ArrayList<String> files;
     public Button connectButton;
     public TextField searchFile;
     public Button searchButton;
@@ -29,24 +30,17 @@ public class FileShareDSController {
     @FXML
     ListView<String> filesIhave;// = new ListView<String>();
     ObservableList<String> items = FXCollections.observableArrayList();
-    
     @FXML
     ListView<String> filesAvailable;// = new ListView<String>();
     ObservableList<String> availableItems = FXCollections.observableArrayList();
-    
-    
     ArrayList<Neighbour> nodes;
     Neighbour myself;
-
-    static ArrayList<String> files;
-
+    int hops = 20;
+    private boolean isConnected = false;
+    
     public static ArrayList<String> getFiles() {
         return files;
     }
-
-    int hops = 20;
-    
-    private boolean isConnected = false;
     
     public void init() {
         System.out.println(System.currentTimeMillis());

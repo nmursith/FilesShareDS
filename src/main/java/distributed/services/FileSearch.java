@@ -12,7 +12,7 @@ import javax.jws.soap.SOAPBinding;
 public interface FileSearch {
     @WebMethod
     String searchFile(String name);
-
+    
     @WebMethod
     String search(String s);
 }

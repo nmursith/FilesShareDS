@@ -21,24 +21,23 @@ import java.util.Map;
 
 /**
  * Java implementation of Python's collections Counter module.
- *
+ * <p>
  * <p>It counts how many times each element provided occurred in an array and
  * returns a dict with the element as key and the count as value.</p>
  *
  * @see <a href="https://docs.python.org/dev/library/collections.html#collections.Counter">
  * https://docs.python.org/dev/library/collections.html#collections.Counter</a>
- *
  * @since 1.0
  */
 final class Counter {
-
+    
     /**
      * Hidden constructor.
      */
     private Counter() {
         super();
     }
-
+    
     /**
      * It counts how many times each element provided occurred in an array and
      * returns a dict with the element as key and the count as value.
@@ -58,5 +57,5 @@ final class Counter {
         }
         return innerCounter;
     }
-
+    
 }

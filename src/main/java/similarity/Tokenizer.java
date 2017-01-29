@@ -23,7 +23,7 @@ package similarity;
  * @since 1.0
  */
 interface Tokenizer<T> {
-
+    
     /**
      * Returns an array of tokens.
      *
@@ -31,5 +31,5 @@ interface Tokenizer<T> {
      * @return array of tokens
      */
     T[] tokenize(CharSequence text);
-
+    
 }

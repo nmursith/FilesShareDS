@@ -22,7 +22,7 @@ package similarity;
  * The {@link #apply(CharSequence right)} method accepts the "right" string and invokes the
  * comparison function for the pair of strings.
  * </p>
- *
+ * <p>
  * <p>
  * The following is an example which finds the most similar string:
  * </p>
@@ -51,7 +51,7 @@ package similarity;
  * @since 1.0
  */
 public class EditDistanceFrom<R> {
-
+    
     /**
      * Edit distance.
      */
@@ -60,24 +60,24 @@ public class EditDistanceFrom<R> {
      * Left parameter used in distance function.
      */
     private final CharSequence left;
-
+    
     /**
      * <p>This accepts the edit distance implementation and the "left" string.</p>
      *
      * @param editDistance This may not be null.
-     * @param left This may be null here,
-     *             but the EditDistance#compare(CharSequence left, CharSequence right)
-     *             implementation may not accept nulls.
+     * @param left         This may be null here,
+     *                     but the EditDistance#compare(CharSequence left, CharSequence right)
+     *                     implementation may not accept nulls.
      */
     public EditDistanceFrom(final EditDistance<R> editDistance, final CharSequence left) {
         if (editDistance == null) {
             throw new IllegalArgumentException("The edit distance may not be null.");
         }
-
+        
         this.editDistance = editDistance;
         this.left = left;
     }
-
+    
     /**
      * <p>
      * This compares "left" field against the "right" parameter
@@ -90,7 +90,7 @@ public class EditDistanceFrom<R> {
     public R apply(final CharSequence right) {
         return editDistance.apply(left, right);
     }
-
+    
     /**
      * Gets the left parameter.
      *
@@ -99,7 +99,7 @@ public class EditDistanceFrom<R> {
     public CharSequence getLeft() {
         return left;
     }
-
+    
     /**
      * Gets the edit distance.
      *
@@ -108,5 +108,5 @@ public class EditDistanceFrom<R> {
     public EditDistance<R> getEditDistance() {
         return editDistance;
     }
-
+    
 }

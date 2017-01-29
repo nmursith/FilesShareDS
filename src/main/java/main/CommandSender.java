@@ -22,9 +22,9 @@ public class CommandSender extends Thread {
     private String command;
     private int hops;
     private int no_files;
-
+    
     //public CommandSender(String IP, int port, int hops, Neighbour myself, String command, int count){
-        public CommandSender(String IP, int port,  String command){
+    public CommandSender(String IP, int port, String command) {
         this.IP = IP;
         this.port = port;
 //        this.hops = hops;
@@ -33,13 +33,13 @@ public class CommandSender extends Thread {
         this.isStopped = false;
 //        this.no_files = count;
     }
-
+    
     @Override
     public void run() {
         super.run();
         isStopped = false;
         try {
-
+            
             sock = new DatagramSocket();
                 /*
                 REG IP_address port_no username
@@ -48,38 +48,39 @@ public class CommandSender extends Thread {
             InetAddress IA = InetAddress.getLocalHost();
             String ip = ServerController.getIP();
             //length SEROK no_files IP port hops filename1 filename2 ... ...
-
+            
             //String request = "SEROK "+no_files+" " +  myself.getIp() +" " + myself.getPort() + " " +hops +" "+ command;
             String request = command;
             int size = request.length() + 5;
             DecimalFormat myFormatter = new DecimalFormat("0000");
             String output = myFormatter.format(size);
-            request =  output +" " + request ;
-
+            request = output + " " + request;
+            
             System.out.println(request);
             InetAddress server = InetAddress.getByName(IP);
-
-            DatagramPacket dpReply = new DatagramPacket(request.getBytes() , request.getBytes().length , server , port);
+            
+            DatagramPacket dpReply = new DatagramPacket(request.getBytes(), request.getBytes().length, server, port);
             sock.send(dpReply);
-            System.out.println("Reply To " + IP +" " +port);
+            System.out.println("Reply To " + IP + " " + port);
             byte[] buffer = new byte[65536];
             DatagramPacket incoming = new DatagramPacket(buffer, buffer.length);
             sock.receive(incoming);
-
+            
             sock.close();
             stopThread();
-
+            
         } catch (SocketException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-    public  void stopThread(){
+    
+    public void stopThread() {
         isStopped = true;
         Thread t = this;
         t.stop();
         t = null;
     }
-
+    
 }
