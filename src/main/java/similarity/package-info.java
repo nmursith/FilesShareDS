@@ -16,13 +16,13 @@
  */
 /**
  * <p>Provides algorithms for string similarity.</p>
- *
+ * <p>
  * <p>The algorithms that implement the EditDistance interface follow the same
  * simple principle: the more similar (closer) strings are, lower is the distance.
  * For example, the words house and hose are closer than house and trousers.</p>
- *
+ * <p>
  * <p>The following algorithms are available at the moment:</p>
- *
+ * <p>
  * <ul>
  * <li>{@link org.apache.commons.text.similarity.CosineDistance Cosine Distance}</li>
  * <li>{@link org.apache.commons.text.similarity.CosineSimilarity Cosine Similarity}</li>
@@ -31,7 +31,7 @@
  * <li>{@link org.apache.commons.text.similarity.JaroWinklerDistance Jaro-Winkler Distance}</li>
  * <li>{@link org.apache.commons.text.similarity.LevenshteinDistance Levenshtein Distance}</li>
  * </ul>
- *
+ * <p>
  * <p>The {@link org.apache.commons.text.similarity.CosineDistance Cosine Distance}
  * utilises a {@link org.apache.commons.text.similarity.RegexTokenizer regular expression tokenizer (\w+)}.
  * And the {@link org.apache.commons.text.similarity.LevenshteinDistance Levenshtein Distance}'s

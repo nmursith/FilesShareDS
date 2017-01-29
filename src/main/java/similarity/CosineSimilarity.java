@@ -23,7 +23,7 @@ import java.util.Set;
 /**
  * Measures the Cosine similarity of two vectors of an inner product space and
  * compares the angle between them.
- *
+ * <p>
  * <p>
  * For further explanation about the Cosine Similarity, refer to
  * http://en.wikipedia.org/wiki/Cosine_similarity.
@@ -32,11 +32,11 @@ import java.util.Set;
  * @since 1.0
  */
 public class CosineSimilarity {
-
+    
     /**
      * Calculates the cosine similarity for two given vectors.
      *
-     * @param leftVector left vector
+     * @param leftVector  left vector
      * @param rightVector right vector
      * @return cosine similarity between the two vectors
      */
@@ -44,9 +44,9 @@ public class CosineSimilarity {
         if (leftVector == null || rightVector == null) {
             throw new IllegalArgumentException("Vectors must not be null");
         }
-
+        
         final Set<CharSequence> intersection = getIntersection(leftVector, rightVector);
-
+        
         final double dotProduct = dot(leftVector, rightVector, intersection);
         double d1 = 0.0d;
         for (final Integer value : leftVector.values()) {
@@ -64,38 +64,38 @@ public class CosineSimilarity {
         }
         return cosineSimilarity;
     }
-
+    
     /**
      * Returns a set with strings common to the two given maps.
      *
-     * @param leftVector left vector map
+     * @param leftVector  left vector map
      * @param rightVector right vector map
      * @return common strings
      */
     private Set<CharSequence> getIntersection(final Map<CharSequence, Integer> leftVector,
-            final Map<CharSequence, Integer> rightVector) {
+                                              final Map<CharSequence, Integer> rightVector) {
         final Set<CharSequence> intersection = new HashSet<>(leftVector.keySet());
         intersection.retainAll(rightVector.keySet());
         return intersection;
     }
-
+    
     /**
      * Computes the dot product of two vectors. It ignores remaining elements. It means
      * that if a vector is longer than other, then a smaller part of it will be used to compute
      * the dot product.
      *
-     * @param leftVector left vector
-     * @param rightVector right vector
+     * @param leftVector   left vector
+     * @param rightVector  right vector
      * @param intersection common elements
      * @return the dot product
      */
     private double dot(final Map<CharSequence, Integer> leftVector, final Map<CharSequence, Integer> rightVector,
-            final Set<CharSequence> intersection) {
+                       final Set<CharSequence> intersection) {
         long dotProduct = 0;
         for (final CharSequence key : intersection) {
             dotProduct += leftVector.get(key) * rightVector.get(key);
         }
         return dotProduct;
     }
-
+    
 }

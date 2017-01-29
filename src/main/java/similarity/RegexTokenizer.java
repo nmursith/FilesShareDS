@@ -29,7 +29,7 @@ import java.util.regex.Pattern;
  * @since 1.0
  */
 class RegexTokenizer implements Tokenizer<CharSequence> {
-
+    
     /**
      * {@inheritDoc}
      *
@@ -48,5 +48,5 @@ class RegexTokenizer implements Tokenizer<CharSequence> {
         }
         return tokens.toArray(new String[0]);
     }
-
+    
 }

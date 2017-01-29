@@ -20,18 +20,18 @@ import java.util.Map;
 
 /**
  * Measures the cosine distance between two character sequences.
- *
+ * <p>
  * <p>It utilizes the {@link CosineSimilarity} to compute the distance. Character sequences
  * are converted into vectors through a simple tokenizer that works with a regular expression
  * to split words in a sentence.</p>
- *
+ * <p>
  * <p>
  * For further explanation about Cosine Similarity and Cosine Distance, refer to
  * http://en.wikipedia.org/wiki/Cosine_similarity.
  * </p>
  *
- * @since 1.0
  * @see CosineSimilarity
+ * @since 1.0
  */
 public class CosineDistance implements EditDistance<Double> {
     /**
@@ -42,17 +42,17 @@ public class CosineDistance implements EditDistance<Double> {
      * Cosine similarity.
      */
     private final CosineSimilarity cosineSimilarity = new CosineSimilarity();
-
+    
     @Override
     public Double apply(final CharSequence left, final CharSequence right) {
         final CharSequence[] leftTokens = tokenizer.tokenize(left);
         final CharSequence[] rightTokens = tokenizer.tokenize(right);
-
+        
         final Map<CharSequence, Integer> leftVector = Counter.of(leftTokens);
         final Map<CharSequence, Integer> rightVector = Counter.of(rightTokens);
         final double similarity = cosineSimilarity.cosineSimilarity(leftVector, rightVector);
         //return 1.0 - similarity;
         return similarity;
     }
-
+    
 }

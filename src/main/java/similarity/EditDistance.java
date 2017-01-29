@@ -18,7 +18,7 @@ package similarity;
 
 /**
  * Interface for <a href="http://en.wikipedia.org/wiki/Edit_distance">Edit Distances</a>.
- *
+ * <p>
  * <p>
  * An edit distance is a formal metric on the Kleene closure (<code>X<sup>*</sup></code>) over an
  * alphabet (<code>X</code>). Note, that a <a href="https://en.wikipedia.org/wiki/Metric_(mathematics)">metric</a>
@@ -27,13 +27,13 @@ package similarity;
  * the set <code>S</code>:
  * </p>
  * <ul>
- *     <li><code>d(x,y) &gt;= 0</code>, non-negativity or separation axiom</li>
- *     <li><code>d(x,y) == 0</code>, if and only if, <code>x == y</code></li>
- *     <li><code>d(x,y) == d(y,x)</code>, symmetry, and</li>
- *     <li><code>d(x,z) &lt;=  d(x,y) + d(y,z)</code>, the triangle inequality</li>
+ * <li><code>d(x,y) &gt;= 0</code>, non-negativity or separation axiom</li>
+ * <li><code>d(x,y) == 0</code>, if and only if, <code>x == y</code></li>
+ * <li><code>d(x,y) == d(y,x)</code>, symmetry, and</li>
+ * <li><code>d(x,z) &lt;=  d(x,y) + d(y,z)</code>, the triangle inequality</li>
  * </ul>
- *
- *
+ * <p>
+ * <p>
  * <p>
  * This is a BiFunction&lt;CharSequence, CharSequence, R&gt;.
  * The <code>apply</code> method
@@ -45,15 +45,15 @@ package similarity;
  * @since 1.0
  */
 public interface EditDistance<R> extends SimilarityScore<R> {
-
+    
     /**
      * Compares two CharSequences.
      *
-     * @param left the first CharSequence
+     * @param left  the first CharSequence
      * @param right the second CharSequence
      * @return the similarity score between two CharSequences
      */
     @Override
     R apply(CharSequence left, CharSequence right);
-
+    
 }

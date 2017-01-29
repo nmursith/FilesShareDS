@@ -6,10 +6,12 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="distributed.fileshare" />
         <module name="FileShareDS" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="distributed.fileshare" target="1.8" />
       <module name="FileShareDS" target="1.8" />
     </bytecodeTargetLevel>
   </component>

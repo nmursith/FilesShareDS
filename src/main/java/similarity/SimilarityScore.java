@@ -18,7 +18,7 @@ package similarity;
 
 /**
  * Interface for the concept of a string similarity score.
- *
+ * <p>
  * <p>
  * A string similarity score is intended to have <i>some</i> of the properties of a metric, yet
  * allowing for exceptions, namely the Jaro-Winkler similarity score.
@@ -28,15 +28,15 @@ package similarity;
  * following properties:
  * </p>
  * <ul>
- *     <li><code>d(x,y) &gt;= 0</code>, non-negativity or separation axiom</li>
- *     <li><code>d(x,y) == d(y,x)</code>, symmetry.</li>
+ * <li><code>d(x,y) &gt;= 0</code>, non-negativity or separation axiom</li>
+ * <li><code>d(x,y) == d(y,x)</code>, symmetry.</li>
  * </ul>
- *
+ * <p>
  * <p>
  * Notice, these are two of the properties that contribute to d being a metric.
  * </p>
- *
- *
+ * <p>
+ * <p>
  * <p>
  * Further, this intended to be BiFunction&lt;CharSequence, CharSequence, R&gt;.
  * The <code>apply</code> method
@@ -50,14 +50,14 @@ package similarity;
  * @since 1.0
  */
 public interface SimilarityScore<R> {
-
+    
     /**
      * Compares two CharSequences.
      *
-     * @param left the first CharSequence
+     * @param left  the first CharSequence
      * @param right the second CharSequence
      * @return the similarity score between two CharSequences
      */
     R apply(CharSequence left, CharSequence right);
-
+    
 }
