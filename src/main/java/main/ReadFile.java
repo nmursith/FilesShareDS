@@ -1,11 +1,9 @@
-import similarity.CosineDistance;
-import similarity.CosineSimilarity;
+package main;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.security.Timestamp;
 import java.util.ArrayList;
 import java.util.Random;
 

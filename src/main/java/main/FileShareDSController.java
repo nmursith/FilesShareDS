@@ -1,3 +1,5 @@
+package main;
+
 import JavaBootStrapServer.Neighbour;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -8,13 +10,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import util.MyFilleList;
 
 import java.io.IOException;
 import java.net.*;
-import java.security.Timestamp;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Hashtable;
 
 /**
  * Created by nifras on 1/12/17.
@@ -36,7 +37,13 @@ public class FileShareDSController {
 
     ArrayList<Neighbour> nodes;
     Neighbour myself;
-    ArrayList<String> files;
+
+    static ArrayList<String> files;
+
+    public static ArrayList<String> getFiles() {
+        return files;
+    }
+
     int hops = 20;
 
     private boolean isConnected = false;
@@ -45,7 +52,7 @@ public class FileShareDSController {
         System.out.println(System.currentTimeMillis());
         filesIhave.setItems(items);
         filesAvailable.setItems(availableItems);
-        files = new ReadFile().getFilePerNode();
+        files = MyFilleList.getInstance().getFiles();
         serverController = new ServerController(this);
         items.addAll(files);
 

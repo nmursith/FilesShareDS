@@ -1,3 +1,5 @@
+package main;
+
 import JavaBootStrapServer.Neighbour;
 
 import java.io.IOException;
@@ -6,8 +8,6 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.text.DecimalFormat;
-import java.util.Random;
-import java.util.StringTokenizer;
 
 /**
  * Created by nifras on 1/12/17.

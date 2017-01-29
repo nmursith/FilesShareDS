@@ -1,7 +1,8 @@
-/**
+package main; /**
  * Created by nifras on 1/12/17.
  */
 
+import distributed.services.FileSearchImpl;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -17,7 +18,9 @@ import java.io.IOException;
 public class FileShareDS extends Application {
 
     public static void main(String[] args) {
+        FileSearchImpl.runService();
         launch(args);
+
     }
 
     @Override
@@ -30,7 +33,6 @@ public class FileShareDS extends Application {
 
         Scene scene = new Scene(root);//, 550, 605);
 //        scene.getStylesheets().add(getClass().getResource("theme.css").toExternalForm());
-
 
 
 //        Image ico = new Image(getClass().getResourceAsStream("appIcon.png"));

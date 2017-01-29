@@ -1,3 +1,5 @@
+package main;
+
 import JavaBootStrapServer.Neighbour;
 
 import java.io.IOException;
@@ -12,7 +14,7 @@ class ServerController {
 
     public  boolean isConnected = false;
     DatagramSocket sock = null;
-    String serverAddrees = "---------127.0.0.1";
+    String serverAddrees = "127.0.0.1";
     InetAddress server ;
     int serverport = 55555;
     ArrayList<Neighbour> nodes = new ArrayList<Neighbour>();
