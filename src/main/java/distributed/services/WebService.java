@@ -10,14 +10,14 @@ import javax.xml.ws.Endpoint;
 public class WebService {
     public static void main(String[] args) {
         WebService wsInstance = new WebService();
-        Endpoint.publish("http://localhost:8282/tutorial", wsInstance);
+        Endpoint.publish("http://localhost:8282/dsfs", wsInstance);
     }
-
+    
     @WebMethod
     public String getHelloWorld() {
         return "Hello, World!";
     }
-
+    
     @WebMethod
     public String getPersonalizedHelloWorld(String yourName) {
         return "Hello, " + yourName + "!";

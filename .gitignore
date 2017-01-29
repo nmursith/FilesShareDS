@@ -34,3 +34,4 @@ buildNumber.properties
 
 # IntelliJ
 /out/
+/distributed.fileshare.iml
