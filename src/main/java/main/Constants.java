@@ -24,6 +24,6 @@ public class Constants {
     public static String JOIN = "JOIN";
     public static String LEAVE = "LEAVE";
     
-    public static String BOOTSTRAP_SERVER_IP = IPLIKE + ".8.102";
+    public static String BOOTSTRAP_SERVER_IP = ReadFile.getBootStrapSever();//IPLIKE + ".8.102";
     
 }

@@ -18,7 +18,7 @@ import java.io.IOException;
 public class FileShareDS extends Application {
     
     public static void main(String[] args) {
-        FileSearchImpl.runService();
+        //FileSearchImpl.runService();
         launch(args);
         
     }

@@ -41,7 +41,7 @@ public class FileShareDSController {
     Neighbour myself;
     int hops = 20;
     private boolean isConnected = false;
-    
+    static FileShareDSController fileShareDSController;
     public static ArrayList<String> getFiles() {
         return files;
     }
@@ -53,7 +53,7 @@ public class FileShareDSController {
         files = MyFilleList.getInstance().getFiles();
         serverController = new ServerController(this);
         items.addAll(files);
-        
+        fileShareDSController = this;
         //search();
         
     }
@@ -65,12 +65,12 @@ public class FileShareDSController {
         
         ArrayList<String> neighbours = new ArrayList<>();
         neighbours.add(ServerController.getIP());
-        neighbours.add("192.168.8.101");
+       // neighbours.add("192.168.8.101");
         
         for (Neighbour node : nodes) {
             URL url = null;
             try {
-                url = new URL("http://" + node.getIp() + ":8282/ws/search");
+                url = new URL("http://" + node.getIp() + ":"+node.getPort()+"/ws/search");
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
@@ -78,25 +78,28 @@ public class FileShareDSController {
             //1st argument service URI, refer to wsdl document above
             //2nd argument is service name, refer to wsdl document above
             QName qname = new QName("http://services.distributed/", "FileSearchImplService");
-            
+            String request = "SER "+  myself.getIp() +" " + myself.getPort() + " "+file +" "+ hops + " " +System.currentTimeMillis() ;
             Service service = Service.create(url, qname);
             
             FileSearch hello = service.getPort(FileSearch.class);
-            
+            hello.search(request);
             // System.out.println(hello.search("Microsoft"));
-            StringTokenizer files = new StringTokenizer(hello.search(file), ",");
-            while (files.hasMoreTokens()) {
-                String fileName = files.nextToken();
-                if (fileName.contains("*")) {
-                    fileName = fileName.replace("*", " ");
-                }
-                final String finalFileName = fileName;
-                Platform.runLater(() -> availableItems.add(finalFileName));
-            }
+
         }
         
     }
-    
+
+    public void addFiles(String file){
+        StringTokenizer files = new StringTokenizer(file, ",");
+        while (files.hasMoreTokens()) {
+            String fileName = files.nextToken();
+            if (fileName.contains("*")) {
+                fileName = fileName.replace("*", " ");
+            }
+            final String finalFileName = fileName;
+            Platform.runLater(() -> availableItems.add(finalFileName));
+        }
+    }
     public void search(String request) {
         //length SER IP port file_name hops
         
@@ -236,7 +239,18 @@ public class FileShareDSController {
         });
         
     }
-    
+
+    public ArrayList<Neighbour> getNodes() {
+        return nodes;
+    }
+
+    public void setNodes(ArrayList<Neighbour> nodes) {
+        this.nodes = nodes;
+    }
+
+    public static FileShareDSController getFileShareDSController() {
+        return fileShareDSController;
+    }
     public void setStage(Stage stage) {
         this.stage = stage;
     }

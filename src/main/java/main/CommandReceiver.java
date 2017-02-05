@@ -98,27 +98,20 @@ public class CommandReceiver extends Thread {
                             new CommandSender(IP, Integer.parseInt(port), request).start();
                         }
                         String request = "SER " + IP + " " + port + " " + file + " " + hop + " " + timestamp;
-                        fileShareDSController.search(request);
+                        //fileShareDSController.search(request);
                         
                     }
                     
                 } else if (command.equals(Constants.JOIN)) {
                     String IP = st.nextToken();
                     String port = st.nextToken();
-                    
-                    
                     String request = checkJoin(IP, Integer.parseInt(port));
-                    
                     new CommandSender(IP, Integer.parseInt(port), request).start();
                     
                 } else if (command.equals(Constants.LEAVE)) {
                     String IP = st.nextToken();
                     String port = st.nextToken();
-                    
-                    
                     String request = leaveCheck(IP, Integer.parseInt(port));
-                    
-                    
                     new CommandSender(IP, Integer.parseInt(port), request).start();
                     
                 } else if (command.equals(Constants.SEROK)) {

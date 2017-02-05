@@ -1,6 +1,8 @@
 package main;
 
 import JavaBootStrapServer.Neighbour;
+import distributed.services.FileSearchImpl;
+import javafx.application.Platform;
 
 import java.io.IOException;
 import java.net.*;
@@ -23,7 +25,7 @@ public class ServerController {
     ArrayList<Neighbour> nodes = new ArrayList<Neighbour>();
     CommandReceiver commandReceiver;
     Neighbour myself;
-    FileShareDSController fileShareDSController;
+    static FileShareDSController fileShareDSController;
     
     public ServerController(FileShareDSController fileShareDSController) {
         this.fileShareDSController = fileShareDSController;
@@ -88,12 +90,14 @@ public class ServerController {
                 DecimalFormat myFormatter = new DecimalFormat("0000");
                 String output = myFormatter.format(size);
                 request = output + " " + request;
-                
-                System.out.println(request);
+
                 server = InetAddress.getByName(serverAddrees);
                 
                 DatagramPacket dpReply = new DatagramPacket(request.getBytes(), request.getBytes().length, server, serverport);
                 sock.send(dpReply);
+
+                System.out.println();
+                System.out.println(request);
                 byte[] buffer = new byte[65536];
                 DatagramPacket incoming = new DatagramPacket(buffer, buffer.length);
                 sock.receive(incoming);
@@ -106,7 +110,15 @@ public class ServerController {
                 
                 if (isConnected) {
                     myself = new Neighbour(ip, port, host);
-                    nodes.add(myself);
+                   nodes.add(myself);
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            FileSearchImpl.runService(ip, port);
+                        }
+                    });
+
+
                     commandReceiver = new CommandReceiver(fileShareDSController, port);
                     commandReceiver.start();
                     
@@ -190,7 +202,9 @@ public class ServerController {
     public boolean isConnected() {
         return isConnected;
     }
-    
+
+
+
     public void setConnected(boolean connected) {
         isConnected = connected;
     }

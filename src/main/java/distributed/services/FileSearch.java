@@ -14,5 +14,8 @@ public interface FileSearch {
     String searchFile(String name);
     
     @WebMethod
-    String search(String s);
+    void search(String s);
+
+    @WebMethod
+    void update(String s);
 }

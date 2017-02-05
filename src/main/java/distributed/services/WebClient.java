@@ -10,8 +10,8 @@ import java.net.URL;
 public class WebClient {
     
     public static void main(String[] args) throws Exception {
-        
-        URL url = new URL("http://localhost:8282/ws/search");
+        //FileSearchImpl.runService(8282);
+      /*  URL url = new URL("http://localhost:8282/ws/search");
         
         //1st argument service URI, refer to wsdl document above
         //2nd argument is service name, refer to wsdl document above
@@ -21,7 +21,7 @@ public class WebClient {
         
         FileSearch hello = service.getPort(FileSearch.class);
         
-        System.out.println(hello.search("lady"));
+        System.out.println(hello.search("lady"));*/
         
     }
 }
