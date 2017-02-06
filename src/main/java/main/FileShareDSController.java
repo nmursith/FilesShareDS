@@ -94,8 +94,10 @@ public class FileShareDSController {
     public void addFiles(String file, String hops){
 
         end =System.currentTimeMillis();
-        System.err.println("Time Elapsed to Find  "+ (end - start)+"ms  withing hops  "+ (20-Integer.parseInt(hops)));
-        start = fileShareDSController.end = 0;
+        long elpsed = end - start;
+        start = end = 0;
+        System.err.println("Time Elapsed to Find  "+ elpsed+"ms  withing hops  "+ (20-Integer.parseInt(hops)));
+
         StringTokenizer files = new StringTokenizer(file, ",");
         while (files.hasMoreTokens()) {
             String fileName = files.nextToken();
