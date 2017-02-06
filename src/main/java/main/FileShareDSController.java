@@ -42,6 +42,8 @@ public class FileShareDSController {
     int hops = 20;
     private boolean isConnected = false;
     static FileShareDSController fileShareDSController;
+    public long start=0, middle =0, end =0;
+
     public static ArrayList<String> getFiles() {
         return files;
     }
@@ -66,7 +68,7 @@ public class FileShareDSController {
         ArrayList<String> neighbours = new ArrayList<>();
         neighbours.add(ServerController.getIP());
        // neighbours.add("192.168.8.101");
-        
+        start = System.currentTimeMillis();
         for (Neighbour node : nodes) {
             URL url = null;
             try {
@@ -89,7 +91,11 @@ public class FileShareDSController {
         
     }
 
-    public void addFiles(String file){
+    public void addFiles(String file, String hops){
+
+        end =System.currentTimeMillis();
+        System.err.println("Time Elapsed to Find  "+ (end - start)+"ms  withing hops  "+ (20-Integer.parseInt(hops)));
+        start = fileShareDSController.end = 0;
         StringTokenizer files = new StringTokenizer(file, ",");
         while (files.hasMoreTokens()) {
             String fileName = files.nextToken();
@@ -184,7 +190,7 @@ public class FileShareDSController {
     }
     
     public void connect(ActionEvent actionEvent) {
-        
+        start = System.currentTimeMillis();
         if (!isConnected) {
             
             nodes = serverController.connect();
@@ -206,8 +212,10 @@ public class FileShareDSController {
             }
             
         }
-        
-        
+
+        end =System.currentTimeMillis();
+        System.err.println("Time Elapsed to Join  "+ (end - start)+"ms");
+        start = end = 0;
         searchButton.setDisable(false);
         this.setTitle();
         

@@ -163,7 +163,7 @@ public class FileSearchImpl implements FileSearch {
 
         String hops = st.nextToken();
         String file = st.nextToken();
-        fileShareDSController.addFiles(file);
+        fileShareDSController.addFiles(file, hops);
 
 
     }
