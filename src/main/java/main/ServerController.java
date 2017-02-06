@@ -184,7 +184,7 @@ public class ServerController {
                 //System.out.println(neighbour.getIp() +"  "+ neighbour.getPort());
                 
             }
-            //System.out.println("Neighbours : " + nodes.size());
+            System.err.println("Number of Neighbours : " + nodes.size());
             
         } else if (regOK.equals(Constants.UNROK)) {
             if (no_nodes.equals(Constants.SUCESSFULL)) {

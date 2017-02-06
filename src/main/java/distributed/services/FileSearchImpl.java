@@ -68,6 +68,7 @@ public class FileSearchImpl implements FileSearch {
             String com = file + timestamp;
             if (!fileSearched.contains(com)) {
                 //check whther I have
+                System.out.println("Searching..........");
                 fileSearched.add(com);
                 System.out.println(com);
                 int hop = Integer.parseInt(hops);

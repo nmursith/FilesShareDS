@@ -15,7 +15,10 @@ import util.MyFilleList;
 
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.*;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -108,7 +111,54 @@ public class FileShareDSController {
             final String finalFileName = fileName;
             Platform.runLater(() -> availableItems.add(finalFileName));
         }
+        record(file, elpsed, 20-Integer.parseInt(hops));
     }
+
+    public  void record(String file, long time, int hops){
+
+
+        BufferedWriter bw = null;
+        FileWriter fw = null;
+        PrintWriter out = null;
+        try {
+
+
+
+            fw = new FileWriter("data.txt",true);
+            bw = new BufferedWriter(fw);
+            out = new PrintWriter(bw);
+            out.println(file+","+time+","+hops);
+
+
+
+        } catch (IOException e) {
+
+            e.printStackTrace();
+
+        }
+        finally {
+
+            try {
+                if(out != null)
+                    out.close();
+
+                if (bw != null)
+                    bw.close();
+
+                if (fw != null)
+                    fw.close();
+
+            } catch (IOException ex) {
+
+                ex.printStackTrace();
+
+            }
+
+        }
+
+
+    }
+
     public void search(String request) {
         //length SER IP port file_name hops
         
