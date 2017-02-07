@@ -22,6 +22,7 @@ import java.io.PrintWriter;
 import java.net.*;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.StringTokenizer;
 
 /**
@@ -46,6 +47,7 @@ public class FileShareDSController {
     private boolean isConnected = false;
     static FileShareDSController fileShareDSController;
     public long start=0, middle =0, end =0;
+    public HashMap<String, Long> timeElapesed;
 
     public static ArrayList<String> getFiles() {
         return files;
@@ -59,14 +61,17 @@ public class FileShareDSController {
         serverController = new ServerController(this);
         items.addAll(files);
         fileShareDSController = this;
+        timeElapesed = new HashMap<>();
         //search();
         
     }
     
     public void search() {
         
-        String file = searchFile.getText();//"\"Mission Impossible\"";
+    /*    String file = searchFile.getText();//"\"Mission Impossible\"";
         file = file.replace(" ", "*");
+
+
         
         ArrayList<String> neighbours = new ArrayList<>();
         neighbours.add(ServerController.getIP());
@@ -79,27 +84,83 @@ public class FileShareDSController {
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
-            
+
             //1st argument service URI, refer to wsdl document above
             //2nd argument is service name, refer to wsdl document above
             QName qname = new QName("http://services.distributed/", "FileSearchImplService");
             String request = "SER "+  myself.getIp() +" " + myself.getPort() + " "+file +" "+ hops + " " +System.currentTimeMillis() ;
             Service service = Service.create(url, qname);
-            
+
             FileSearch hello = service.getPort(FileSearch.class);
             hello.search(request);
             // System.out.println(hello.search("Microsoft"));
 
+        }*/
+
+
+
+        ArrayList<String > filesList = new ReadFile().readFileList("Queries.txt");
+        for(String file_q : filesList) {
+
+
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        String file = file_q.replace(" ", "*");
+
+                        for (Neighbour node : nodes) {
+                            start = System.currentTimeMillis();
+                            URL url = null;
+                            try {
+                                url = new URL("http://" + node.getIp() + ":"+node.getPort()+"/ws/search");
+                            } catch (MalformedURLException e) {
+                                e.printStackTrace();
+                            }
+
+                            //1st argument service URI, refer to wsdl document above
+                            //2nd argument is service name, refer to wsdl document above
+                            QName qname = new QName("http://services.distributed/", "FileSearchImplService");
+                            Long timestamp = System.currentTimeMillis();
+                            timeElapesed.put(file_q+timestamp, start);
+                            String request = "SER "+  myself.getIp() +" " + myself.getPort() + " "+file +" "+ hops + " " +timestamp ;
+                            Service service = Service.create(url, qname);
+
+                            FileSearch hello = service.getPort(FileSearch.class);
+                            hello.search(request);
+                            // System.out.println(hello.search("Microsoft"));
+
+
+                        }
+                    }
+                    catch (NullPointerException e){
+                        e.printStackTrace();
+
+
+                    }
+                    catch (Exception e){
+                    e.printStackTrace();
+                    }
+                }
+            }).start();
+
         }
+
+
         
     }
 
-    public void addFiles(String file, String hops){
+    public void addFiles(String file, String hops, String query){
+       /* System.out.println(start);
+        System.out.println(timeElapesed);
+        System.out.println(query);*/
+        long start = (long)timeElapesed.get(query);
 
         end =System.currentTimeMillis();
         long elpsed = end - start;
-        start = end = 0;
-        if(elpsed<2000)
+        //start = end = 0;
+        if(elpsed<200000)
         System.err.println("Time Elapsed to Find  "+ elpsed+"ms  withing hops  "+ (20-Integer.parseInt(hops)));
 
         StringTokenizer files = new StringTokenizer(file, ",");
@@ -127,7 +188,7 @@ public class FileShareDSController {
             fw = new FileWriter("data.txt",true);
             bw = new BufferedWriter(fw);
             out = new PrintWriter(bw);
-            out.println(file+","+time+","+hops);
+            out.println(file.replace("*", " ")+time+","+hops);
 
 
 

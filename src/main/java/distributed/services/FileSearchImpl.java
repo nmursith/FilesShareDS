@@ -114,11 +114,12 @@ public class FileSearchImpl implements FileSearch {
                         Service service = Service.create(url, qname);
 
                         FileSearch hello = service.getPort(FileSearch.class);
-                        hello.update(response);
+                        hello.update(response, com);
                         // System.out.println(hello.search("Microsoft"));
 
                 }
                 else {
+                    file = file.replace(" ", "*");
                     String request = "SER " + IP + " " + port + " " + file + " " + hop + " " + timestamp;
 
 
@@ -153,7 +154,7 @@ public class FileSearchImpl implements FileSearch {
     }
 
     @Override
-    public void update(String s) {
+    public void update(String s, String query) {
         System.out.println(s);
         //String response = "SEROK " + count + " " + myIP + " " + myPort + " " + hop + " " + files
         StringTokenizer st = new StringTokenizer(s, " ");
@@ -164,7 +165,7 @@ public class FileSearchImpl implements FileSearch {
 
         String hops = st.nextToken();
         String file = st.nextToken();
-        fileShareDSController.addFiles(file, hops);
+        fileShareDSController.addFiles(file, hops, query);
 
 
     }
