@@ -135,10 +135,16 @@ public class FileSearchImpl implements FileSearch {
                         //2nd argument is service name, refer to wsdl document above
                         QName qname = new QName("http://services.distributed/", "FileSearchImplService");
 
-                        Service service = Service.create(url, qname);
+                        try{
+                            Service service = Service.create(url, qname);
 
-                        FileSearch hello = service.getPort(FileSearch.class);
-                        hello.search(request);
+                            FileSearch hello = service.getPort(FileSearch.class);
+                            hello.search(request);
+                        }
+                        catch (Exception e ){
+
+                        }
+
                         // System.out.println(hello.search("Microsoft"));
 
                     }
@@ -165,8 +171,12 @@ public class FileSearchImpl implements FileSearch {
 
         String hops = st.nextToken();
         String file = st.nextToken();
-        fileShareDSController.addFiles(file, hops, query);
+        try {
+            fileShareDSController.addFiles(file, hops, query);
+        }
+        catch (Exception e){
 
+        }
 
     }
 }

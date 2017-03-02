@@ -68,7 +68,7 @@ public class FileShareDSController {
     
     public void search() {
         
-    /*    String file = searchFile.getText();//"\"Mission Impossible\"";
+        String file = searchFile.getText();//"\"Mission Impossible\"";
         file = file.replace(" ", "*");
 
 
@@ -84,22 +84,28 @@ public class FileShareDSController {
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
-
+            Long timestamp = System.currentTimeMillis();
+            timeElapesed.put(file+timestamp, start);
             //1st argument service URI, refer to wsdl document above
             //2nd argument is service name, refer to wsdl document above
             QName qname = new QName("http://services.distributed/", "FileSearchImplService");
             String request = "SER "+  myself.getIp() +" " + myself.getPort() + " "+file +" "+ hops + " " +System.currentTimeMillis() ;
-            Service service = Service.create(url, qname);
+            try{
+                Service service = Service.create(url, qname);
 
-            FileSearch hello = service.getPort(FileSearch.class);
-            hello.search(request);
+                FileSearch hello = service.getPort(FileSearch.class);
+                hello.search(request);
+            }catch (Exception e){
+
+            }
+
             // System.out.println(hello.search("Microsoft"));
 
-        }*/
+        }
 
 
 
-        ArrayList<String > filesList = new ReadFile().readFileList("Queries.txt");
+       /* ArrayList<String > filesList = new ReadFile().readFileList("Queries.txt");
         for(String file_q : filesList) {
 
 
@@ -145,7 +151,7 @@ public class FileShareDSController {
                 }
             }).start();
 
-        }
+        }*/
 
 
         
@@ -155,7 +161,7 @@ public class FileShareDSController {
        /* System.out.println(start);
         System.out.println(timeElapesed);
         System.out.println(query);*/
-        long start = (long)timeElapesed.get(query);
+        long start = timeElapesed.get(query);
 
         end =System.currentTimeMillis();
         long elpsed = end - start;
@@ -304,40 +310,67 @@ public class FileShareDSController {
     }
     
     public void connect(ActionEvent actionEvent) {
-        start = System.currentTimeMillis();
-        if (!isConnected) {
-            
-            nodes = serverController.connect();
-            if (serverController.isConnected()) {
-                connectButton.setText("Disconnect");
-                isConnected = true;
-                //length JOIN IP_address port_no
-                JoinLeave("JOIN");
-            }
-            
-        } else {
-            serverController.disconnect();
-            if (!serverController.isConnected()) {
-                connectButton.setText("Connect");
-                isConnected = false;
-                JoinLeave("LEAVE");
-                //ength LEAVE IP_address port_no
-                
-            }
-            
-        }
 
-        end =System.currentTimeMillis();
-        System.err.println("Time Elapsed to Join  "+ (end - start)+"ms");
-        start = end = 0;
-        searchButton.setDisable(false);
-        this.setTitle();
-        
-        
-        if (!nodes.isEmpty()) {
-            myself = nodes.get(nodes.size() - 1);
-            nodes.remove(nodes.size() - 1);
-        }
+
+        start = System.currentTimeMillis();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (!isConnected) {
+
+                    nodes = serverController.connect();
+                    if (serverController.isConnected()) {
+                        Platform.runLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                connectButton.setText("Disconnect");
+                            }
+                        });
+
+                        isConnected = true;
+                        //length JOIN IP_address port_no
+                        JoinLeave("JOIN");
+                    }
+
+                } else {
+                    serverController.disconnect();
+                    if (!serverController.isConnected()) {
+                        Platform.runLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                connectButton.setText("Connect");
+                            }
+                        });
+
+                        isConnected = false;
+                        JoinLeave("LEAVE");
+                        //ength LEAVE IP_address port_no
+
+                    }
+
+                }
+
+                end =System.currentTimeMillis();
+                System.err.println("Time Elapsed to Join  "+ (end - start)+"ms");
+                start = end = 0;
+                searchButton.setDisable(false);
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        setTitle();
+                    }
+                });
+
+
+
+                if (!nodes.isEmpty()) {
+                    myself = nodes.get(nodes.size() - 1);
+                    nodes.remove(nodes.size() - 1);
+                }
+            }
+        }).start();
+
     }
     
     public void JoinLeave(String command) {
